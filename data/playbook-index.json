@@ -1,0 +1,451 @@
+[
+ {
+  "file": "base-vs-total-comp.md",
+  "title": "Base vs total comp",
+  "category": "comp_gap",
+  "real": "Candidates compare base salary to base salary because it's the only number that's easy to hold in your head. Bonus, equity, pension contribution and benefits get waved away as 'nice to have'. Often the offer is genuinely competitive on total and weak on base, and the candidate hasn't clocked it. Sometimes the opposite: their current bonus is mostly theoretical and they're overvaluing it. Before anyone negotiates, get both packages written down side by side. You're not trying to talk them out of their concern. You're making sure the concern is real.",
+  "ladder": [
+   "What did your bonus actually pay out the last two years, not the target, the real number?",
+   "If we lined both packages up on one page, which line would you want to see move first?",
+   "How much of the equity are you counting as real money today?"
+  ],
+  "watch": "If they light up about equity, check they understand vesting and the strike price. Excitement now becomes regret at the offer stage.",
+  "text": "# Base vs total comp\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nCandidates compare base salary to base salary because it's the only number that's easy to hold in your head. Bonus, equity, pension contribution and benefits get waved away as 'nice to have'. Often the offer is genuinely competitive on total and weak on base, and the candidate hasn't clocked it. Sometimes the opposite: their current bonus is mostly theoretical and they're overvaluing it. Before anyone negotiates, get both packages written down side by side. You're not trying to talk them out of their concern. You're making sure the concern is real.\n\n## Dig deeper\n\n1. What did your bonus actually pay out the last two years, not the target, the real number?\n2. If we lined both packages up on one page, which line would you want to see move first?\n3. How much of the equity are you counting as real money today?\n\n## Watch for\n\nIf they light up about equity, check they understand vesting and the strike price. Excitement now becomes regret at the offer stage."
+ },
+ {
+  "file": "bonus-vesting-cliff.md",
+  "title": "Bonus or vesting cliff",
+  "category": "timing",
+  "real": "Candidates close to a bonus payout or vesting cliff will quietly drag their feet. It's rational. Get the date and the amount on the table early, so the client can decide whether to buy it out or wait. Hiding it until offer stage kills deals.",
+  "ladder": [
+   "When does your bonus pay out, and roughly how much are we talking?",
+   "Is there any equity vesting in the next six months?",
+   "If the client covered that, or timed your start after it, does the timing worry go away?"
+  ],
+  "watch": "Buyouts are more common than candidates think. Ask the client before assuming no.",
+  "text": "# Bonus or vesting cliff\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nCandidates close to a bonus payout or vesting cliff will quietly drag their feet. It's rational. Get the date and the amount on the table early, so the client can decide whether to buy it out or wait. Hiding it until offer stage kills deals.\n\n## Dig deeper\n\n1. When does your bonus pay out, and roughly how much are we talking?\n2. Is there any equity vesting in the next six months?\n3. If the client covered that, or timed your start after it, does the timing worry go away?\n\n## Watch for\n\nBuyouts are more common than candidates think. Ask the client before assuming no."
+ },
+ {
+  "file": "candidate-going-quiet.md",
+  "title": "Candidate going quiet",
+  "category": "motivation_mismatch",
+  "real": "When a candidate stops replying, it's rarely because they're busy. They're usually talking to someone else, having doubts, or embarrassed about saying no. Make it easy for them to tell you the truth.",
+  "ladder": [
+   "Has anything changed since we last spoke?",
+   "Is there something about the role you've been unsure how to bring up?",
+   "Would it be easier if I just asked: are you still interested?"
+  ],
+  "watch": "Give people an easy out. The ones who take it were going to leave anyway.",
+  "text": "# Candidate going quiet\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWhen a candidate stops replying, it's rarely because they're busy. They're usually talking to someone else, having doubts, or embarrassed about saying no. Make it easy for them to tell you the truth.\n\n## Dig deeper\n\n1. Has anything changed since we last spoke?\n2. Is there something about the role you've been unsure how to bring up?\n3. Would it be easier if I just asked: are you still interested?\n\n## Watch for\n\nGive people an easy out. The ones who take it were going to leave anyway."
+ },
+ {
+  "file": "career-direction.md",
+  "title": "Career direction",
+  "category": "motivation_mismatch",
+  "real": "When a candidate talks about where they want to be in three years, listen for whether this role is a step on that path or a detour. People will take a detour for money, but they don't stay. Map the path out loud with them and be honest about where this role sits.",
+  "ladder": [
+   "Where do you want to be in three years, and what's the step that gets you there?",
+   "Does this role move you closer to that, or is it a side step?",
+   "What would you need to learn in the next job to make that jump?"
+  ],
+  "watch": "Candidates who want leadership but are being pitched an IC role are a classic mismatch. Name it early.",
+  "text": "# Career direction\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWhen a candidate talks about where they want to be in three years, listen for whether this role is a step on that path or a detour. People will take a detour for money, but they don't stay. Map the path out loud with them and be honest about where this role sits.\n\n## Dig deeper\n\n1. Where do you want to be in three years, and what's the step that gets you there?\n2. Does this role move you closer to that, or is it a side step?\n3. What would you need to learn in the next job to make that jump?\n\n## Watch for\n\nCandidates who want leadership but are being pitched an IC role are a classic mismatch. Name it early."
+ },
+ {
+  "file": "client-going-quiet.md",
+  "title": "Client going quiet",
+  "category": "hiring_manager",
+  "real": "When the client or hiring manager goes quiet, candidates assume the worst and start entertaining other offers. Be honest about what you know and what you don't. Give them a date when you'll update them, even if the update is 'still nothing'.",
+  "ladder": [
+   "What have you been telling yourself about the silence?",
+   "Are other processes moving while you wait?",
+   "If I can get you an answer by Thursday, will you hold until then?"
+  ],
+  "watch": "Silence from the client for more than a week is a deal risk. Chase internally before the candidate chases you.",
+  "text": "# Client going quiet\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWhen the client or hiring manager goes quiet, candidates assume the worst and start entertaining other offers. Be honest about what you know and what you don't. Give them a date when you'll update them, even if the update is 'still nothing'.\n\n## Dig deeper\n\n1. What have you been telling yourself about the silence?\n2. Are other processes moving while you wait?\n3. If I can get you an answer by Thursday, will you hold until then?\n\n## Watch for\n\nSilence from the client for more than a week is a deal risk. Chase internally before the candidate chases you."
+ },
+ {
+  "file": "closing-buying-signal.md",
+  "title": "Buying signal",
+  "category": "commitment_signal",
+  "real": "When a candidate says 'that sounds great' or asks about next steps, stop selling. Most recruiters keep talking and talk themselves out of the deal. Confirm the interest, surface any last objection, and lock the next step with a date.",
+  "ladder": [
+   "On a scale of one to ten, where are you right now, and what would make it a ten?",
+   "Is there anything that would stop you saying yes if an offer came through?",
+   "Can we lock in the next conversation before we hang up?"
+  ],
+  "watch": "A six or seven is a real answer. Ask what the missing points are, that's your remaining objection.",
+  "text": "# Buying signal\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWhen a candidate says 'that sounds great' or asks about next steps, stop selling. Most recruiters keep talking and talk themselves out of the deal. Confirm the interest, surface any last objection, and lock the next step with a date.\n\n## Dig deeper\n\n1. On a scale of one to ten, where are you right now, and what would make it a ten?\n2. Is there anything that would stop you saying yes if an offer came through?\n3. Can we lock in the next conversation before we hang up?\n\n## Watch for\n\nA six or seven is a real answer. Ask what the missing points are, that's your remaining objection."
+ },
+ {
+  "file": "commute.md",
+  "title": "Commute",
+  "category": "remote_location",
+  "real": "Candidates underestimate commutes at interview stage and overestimate them at offer stage. Get the real door to door time and how often.",
+  "ladder": [
+   "Have you actually done the journey at rush hour yet?",
+   "How many days a week would you be making that trip?",
+   "What's the longest commute you've done before, and how did it go?"
+  ],
+  "watch": "An hour each way, three days a week, is a common quiet reason for declining.",
+  "text": "# Commute\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nCandidates underestimate commutes at interview stage and overestimate them at offer stage. Get the real door to door time and how often.\n\n## Dig deeper\n\n1. Have you actually done the journey at rush hour yet?\n2. How many days a week would you be making that trip?\n3. What's the longest commute you've done before, and how did it go?\n\n## Watch for\n\nAn hour each way, three days a week, is a common quiet reason for declining."
+ },
+ {
+  "file": "comp-gap.md",
+  "title": "Comp gap",
+  "category": "comp_gap",
+  "real": "When a candidate says the number is low, nine times out of ten they haven't done the maths on the whole package yet, or they're anchoring to a figure someone else gave them. The worst move is jumping straight to the client to ask for more. You lose credibility with both sides and you still don't know what the real gap is. Your job is to find out three things: the number they actually need, the number they'd love, and where that number came from. Those are rarely the same figure. A candidate who says 'I need 180' often means 'my mate at a bigger company is on 180 and I'd feel silly taking less'. That's an ego gap, not a mortgage gap, and you handle it completely differently.",
+  "ladder": [
+   "When you say it's lower than you hoped, what number did you have in your head, and where did that number come from?",
+   "If the base landed exactly where you want, what else about this role would still give you pause?",
+   "What's the number where you'd stop thinking about money and start thinking about the work?",
+   "If I went back to them with that, and they got close but not all the way, what would make the difference for you?"
+  ],
+  "watch": "Candidates who won't name a number are usually using another offer as the anchor. Pivot to the competing process ladder.",
+  "text": "# Comp gap\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWhen a candidate says the number is low, nine times out of ten they haven't done the maths on the whole package yet, or they're anchoring to a figure someone else gave them. The worst move is jumping straight to the client to ask for more. You lose credibility with both sides and you still don't know what the real gap is. Your job is to find out three things: the number they actually need, the number they'd love, and where that number came from. Those are rarely the same figure. A candidate who says 'I need 180' often means 'my mate at a bigger company is on 180 and I'd feel silly taking less'. That's an ego gap, not a mortgage gap, and you handle it completely differently.\n\n## Dig deeper\n\n1. When you say it's lower than you hoped, what number did you have in your head, and where did that number come from?\n2. If the base landed exactly where you want, what else about this role would still give you pause?\n3. What's the number where you'd stop thinking about money and start thinking about the work?\n4. If I went back to them with that, and they got close but not all the way, what would make the difference for you?\n\n## Watch for\n\nCandidates who won't name a number are usually using another offer as the anchor. Pivot to the competing process ladder."
+ },
+ {
+  "file": "company-stability.md",
+  "title": "Company stability",
+  "category": "company_doubt",
+  "real": "Since the layoffs of the last few years, candidates ask about runway and stability far more than they used to. Don't reassure them with fluff. Find out what they've read or heard, and get the client to answer directly. A client that won't talk about runway is telling you something too.",
+  "ladder": [
+   "What have you heard, and where did you hear it?",
+   "What would you need to know to feel comfortable, runway, revenue, investors?",
+   "Would a conversation with their finance lead or founder help?"
+  ],
+  "watch": "Candidates with a family and a mortgage weigh stability more than they say out loud.",
+  "text": "# Company stability\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nSince the layoffs of the last few years, candidates ask about runway and stability far more than they used to. Don't reassure them with fluff. Find out what they've read or heard, and get the client to answer directly. A client that won't talk about runway is telling you something too.\n\n## Dig deeper\n\n1. What have you heard, and where did you hear it?\n2. What would you need to know to feel comfortable, runway, revenue, investors?\n3. Would a conversation with their finance lead or founder help?\n\n## Watch for\n\nCandidates with a family and a mortgage weigh stability more than they say out loud."
+ },
+ {
+  "file": "competing-process.md",
+  "title": "Competing process",
+  "category": "competing_process",
+  "real": "When a candidate mentions another process, they're usually doing one of three things: genuinely telling you the timeline, creating urgency to get a better number, or quietly preparing you for a no. You need to know which. Don't panic and don't get competitive about the other company. Get curious. The single most valuable fact is what they like about the other role that this one doesn't have. That's the real objection, and it's often not money at all.",
+  "ladder": [
+   "Where are you with them, honestly, and what's the next step and date?",
+   "What do they have that this role doesn't, if you had to name one thing?",
+   "If both offers landed on the same day with the same number, which would you pick and why?",
+   "What would this client need to do this week to stay in the running?"
+  ],
+  "watch": "If they can't name anything the other role does better, the other process is leverage, not a threat. Handle it as a comp conversation.",
+  "text": "# Competing process\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWhen a candidate mentions another process, they're usually doing one of three things: genuinely telling you the timeline, creating urgency to get a better number, or quietly preparing you for a no. You need to know which. Don't panic and don't get competitive about the other company. Get curious. The single most valuable fact is what they like about the other role that this one doesn't have. That's the real objection, and it's often not money at all.\n\n## Dig deeper\n\n1. Where are you with them, honestly, and what's the next step and date?\n2. What do they have that this role doesn't, if you had to name one thing?\n3. If both offers landed on the same day with the same number, which would you pick and why?\n4. What would this client need to do this week to stay in the running?\n\n## Watch for\n\nIf they can't name anything the other role does better, the other process is leverage, not a threat. Handle it as a comp conversation."
+ },
+ {
+  "file": "counteroffer-risk.md",
+  "title": "Counteroffer risk",
+  "category": "counteroffer",
+  "real": "Counteroffers are the most common way an accepted offer dies. If the candidate mentions their manager would 'probably match', assume they will, and assume the candidate is half considering it. The research every recruiter quotes is that most people who accept a counter leave within a year anyway, but quoting that sounds self-serving. Instead, get them to say out loud why they started looking. If money alone fixes that reason, you have a real risk.",
+  "ladder": [
+   "What made you start looking in the first place? Go back to the very first moment.",
+   "If they matched the money tomorrow, would that reason go away?",
+   "How do you think your manager would react when you hand your notice in?",
+   "What would you say to them if they offered a promotion to stay?"
+  ],
+  "watch": "Rehearse the resignation conversation before the offer is signed, not after.",
+  "text": "# Counteroffer risk\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nCounteroffers are the most common way an accepted offer dies. If the candidate mentions their manager would 'probably match', assume they will, and assume the candidate is half considering it. The research every recruiter quotes is that most people who accept a counter leave within a year anyway, but quoting that sounds self-serving. Instead, get them to say out loud why they started looking. If money alone fixes that reason, you have a real risk.\n\n## Dig deeper\n\n1. What made you start looking in the first place? Go back to the very first moment.\n2. If they matched the money tomorrow, would that reason go away?\n3. How do you think your manager would react when you hand your notice in?\n4. What would you say to them if they offered a promotion to stay?\n\n## Watch for\n\nRehearse the resignation conversation before the offer is signed, not after."
+ },
+ {
+  "file": "employer-brand-concerns.md",
+  "title": "Employer brand concerns",
+  "category": "company_doubt",
+  "real": "Glassdoor reviews and word of mouth shape decisions more than anything the hiring manager says. Ask what they read. Often it's two angry reviews from a team they wouldn't even be on.",
+  "ladder": [
+   "What specifically did you read, and which team was it about?",
+   "Do you know anyone who works there, or used to?",
+   "Would it help to speak to someone on the actual team?"
+  ],
+  "watch": "Offering a peer conversation is the fastest way to cut through bad reviews.",
+  "text": "# Employer brand concerns\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nGlassdoor reviews and word of mouth shape decisions more than anything the hiring manager says. Ask what they read. Often it's two angry reviews from a team they wouldn't even be on.\n\n## Dig deeper\n\n1. What specifically did you read, and which team was it about?\n2. Do you know anyone who works there, or used to?\n3. Would it help to speak to someone on the actual team?\n\n## Watch for\n\nOffering a peer conversation is the fastest way to cut through bad reviews."
+ },
+ {
+  "file": "equity-skepticism.md",
+  "title": "Equity skepticism",
+  "category": "comp_gap",
+  "real": "Plenty of candidates have been burned by options that went to zero. When they say 'equity is just paper', they're telling you about their last company, not this one. Don't argue the upside. Ask what would make it feel real. The answer tells you whether you're dealing with risk aversion, a cash flow need, or a story they've heard. Cash flow needs are solvable with base. Risk aversion is a fit question.",
+  "ladder": [
+   "Was there a past company where equity didn't work out for you? What happened?",
+   "If you knew the equity was worth zero, would the base on its own still work?",
+   "What would you need to know about the company to start counting it?"
+  ],
+  "watch": "A candidate with a mortgage and young kids saying this is usually a base problem dressed up as an equity problem.",
+  "text": "# Equity skepticism\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nPlenty of candidates have been burned by options that went to zero. When they say 'equity is just paper', they're telling you about their last company, not this one. Don't argue the upside. Ask what would make it feel real. The answer tells you whether you're dealing with risk aversion, a cash flow need, or a story they've heard. Cash flow needs are solvable with base. Risk aversion is a fit question.\n\n## Dig deeper\n\n1. Was there a past company where equity didn't work out for you? What happened?\n2. If you knew the equity was worth zero, would the base on its own still work?\n3. What would you need to know about the company to start counting it?\n\n## Watch for\n\nA candidate with a mortgage and young kids saying this is usually a base problem dressed up as an equity problem."
+ },
+ {
+  "file": "exploding-offer.md",
+  "title": "Exploding offer",
+  "category": "competing_process",
+  "real": "An offer with a hard deadline is a pressure tactic, and candidates know it, but it still works on them. Your job is to slow the decision down without looking like you're stalling for your client. Find out whether the deadline is real, whether they've asked for more time, and how they actually feel about the other company once you take the clock away.",
+  "ladder": [
+   "Is that deadline firm, or have you asked them for more time yet?",
+   "If the deadline wasn't there, would you take that offer today?",
+   "What would you want to have seen from us before Friday to feel good either way?"
+  ],
+  "watch": "Candidates who'd say yes without the deadline are gone. Spend your energy on the ones who hesitate.",
+  "text": "# Exploding offer\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nAn offer with a hard deadline is a pressure tactic, and candidates know it, but it still works on them. Your job is to slow the decision down without looking like you're stalling for your client. Find out whether the deadline is real, whether they've asked for more time, and how they actually feel about the other company once you take the clock away.\n\n## Dig deeper\n\n1. Is that deadline firm, or have you asked them for more time yet?\n2. If the deadline wasn't there, would you take that offer today?\n3. What would you want to have seen from us before Friday to feel good either way?\n\n## Watch for\n\nCandidates who'd say yes without the deadline are gone. Spend your energy on the ones who hesitate."
+ },
+ {
+  "file": "hiring-manager-fit.md",
+  "title": "Hiring manager fit",
+  "category": "hiring_manager",
+  "real": "People join companies and leave managers. If a candidate didn't click with the hiring manager, that's the most important thing they'll say on the call. Find out whether it was style, a bad day, or a values clash. A bad day can be fixed with a second conversation. A values clash can't.",
+  "ladder": [
+   "What specifically didn't land, was it something they said or how they said it?",
+   "What's the best manager you've had like, compared to them?",
+   "Would a second, more informal conversation with them help?",
+   "If you had a different manager in the same role, would you take it?"
+  ],
+  "watch": "If they'd take the role with a different manager, the role is fine and the manager isn't. Tell the client gently.",
+  "text": "# Hiring manager fit\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nPeople join companies and leave managers. If a candidate didn't click with the hiring manager, that's the most important thing they'll say on the call. Find out whether it was style, a bad day, or a values clash. A bad day can be fixed with a second conversation. A values clash can't.\n\n## Dig deeper\n\n1. What specifically didn't land, was it something they said or how they said it?\n2. What's the best manager you've had like, compared to them?\n3. Would a second, more informal conversation with them help?\n4. If you had a different manager in the same role, would you take it?\n\n## Watch for\n\nIf they'd take the role with a different manager, the role is fine and the manager isn't. Tell the client gently."
+ },
+ {
+  "file": "interview-fatigue.md",
+  "title": "Interview fatigue",
+  "category": "timing",
+  "real": "Long processes kill momentum. After the fourth round, even keen candidates start wondering if the company knows what it wants. Acknowledge it, and push the client for a decision date.",
+  "ladder": [
+   "How are you feeling about the process so far, honestly?",
+   "Is the length of it putting you off, or just tiring?",
+   "If I could get a decision this week, would that change anything?"
+  ],
+  "watch": "Fatigue plus a competing offer is the classic way a strong candidate slips away.",
+  "text": "# Interview fatigue\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nLong processes kill momentum. After the fourth round, even keen candidates start wondering if the company knows what it wants. Acknowledge it, and push the client for a decision date.\n\n## Dig deeper\n\n1. How are you feeling about the process so far, honestly?\n2. Is the length of it putting you off, or just tiring?\n3. If I could get a decision this week, would that change anything?\n\n## Watch for\n\nFatigue plus a competing offer is the classic way a strong candidate slips away."
+ },
+ {
+  "file": "level-calibration.md",
+  "title": "Level calibration",
+  "category": "title_level",
+  "real": "When a candidate thinks they're being pitched below their level, they're often right. Interview loops tend to down-level. Get specifics: what level they're at now, what scope that means, and what the client's ladder actually looks like.",
+  "ladder": [
+   "What does your current level mean in practice, team size, decisions you own?",
+   "Which part of the interview made you feel it was pitched lower?",
+   "If the client re-levelled you after six months, would that work?"
+  ],
+  "watch": "A promise of re-levelling is only worth something in writing.",
+  "text": "# Level calibration\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWhen a candidate thinks they're being pitched below their level, they're often right. Interview loops tend to down-level. Get specifics: what level they're at now, what scope that means, and what the client's ladder actually looks like.\n\n## Dig deeper\n\n1. What does your current level mean in practice, team size, decisions you own?\n2. Which part of the interview made you feel it was pitched lower?\n3. If the client re-levelled you after six months, would that work?\n\n## Watch for\n\nA promise of re-levelling is only worth something in writing."
+ },
+ {
+  "file": "motivation-mismatch.md",
+  "title": "Motivation mismatch",
+  "category": "motivation_mismatch",
+  "real": "Lukewarm language is the loudest signal on a call and the easiest to miss. 'I guess', 'it's fine', 'could be OK' all mean the role doesn't connect to what they actually want. Don't sell harder. Selling a lukewarm candidate gets you an accept followed by a no-show or a three month leaver. Find out what would make them excited, then honestly decide whether this role does it. Sometimes the right move is to park them and come back with the right job. That trust pays off later.",
+  "ladder": [
+   "When you picture your next role going really well, what are you doing on a Tuesday afternoon?",
+   "What part of this role, if any, actually got your attention?",
+   "What would have to be true about this job for you to be genuinely excited, not just OK with it?",
+   "If this isn't it, what should I be looking for on your behalf?"
+  ],
+  "watch": "If their answer to the first question describes a different job, say so. You'll be the first recruiter who has.",
+  "text": "# Motivation mismatch\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nLukewarm language is the loudest signal on a call and the easiest to miss. 'I guess', 'it's fine', 'could be OK' all mean the role doesn't connect to what they actually want. Don't sell harder. Selling a lukewarm candidate gets you an accept followed by a no-show or a three month leaver. Find out what would make them excited, then honestly decide whether this role does it. Sometimes the right move is to park them and come back with the right job. That trust pays off later.\n\n## Dig deeper\n\n1. When you picture your next role going really well, what are you doing on a Tuesday afternoon?\n2. What part of this role, if any, actually got your attention?\n3. What would have to be true about this job for you to be genuinely excited, not just OK with it?\n4. If this isn't it, what should I be looking for on your behalf?\n\n## Watch for\n\nIf their answer to the first question describes a different job, say so. You'll be the first recruiter who has."
+ },
+ {
+  "file": "multiple-recruiters.md",
+  "title": "Multiple recruiters",
+  "category": "competing_process",
+  "real": "Candidates working with several agencies often get submitted twice or lose track of where they are. Ask directly, and be the recruiter who's organised.",
+  "ladder": [
+   "Who else are you working with, and where have they put you forward?",
+   "Has anyone submitted you to this client already?",
+   "Would it help if we lined up all your processes in one place?"
+  ],
+  "watch": "Double submissions embarrass everyone. Check before you send the CV.",
+  "text": "# Multiple recruiters\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nCandidates working with several agencies often get submitted twice or lose track of where they are. Ask directly, and be the recruiter who's organised.\n\n## Dig deeper\n\n1. Who else are you working with, and where have they put you forward?\n2. Has anyone submitted you to this client already?\n3. Would it help if we lined up all your processes in one place?\n\n## Watch for\n\nDouble submissions embarrass everyone. Check before you send the CV."
+ },
+ {
+  "file": "non-compete.md",
+  "title": "Non-compete",
+  "category": "notice_period",
+  "real": "Non-competes are often less enforceable than candidates fear, but you're not a lawyer and shouldn't act like one. Get the clause in writing and let the client's legal team assess it. Your job is to find out how worried the candidate is and whether it's actually blocking them.",
+  "ladder": [
+   "Do you have a copy of the clause itself, or is this from memory?",
+   "Has anyone from your company been held to it before?",
+   "If legal said it's fine, would you be ready to go?"
+  ],
+  "watch": "Candidates sometimes use the non-compete as a reason not to decide. Check if it's the real blocker.",
+  "text": "# Non-compete\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nNon-competes are often less enforceable than candidates fear, but you're not a lawyer and shouldn't act like one. Get the clause in writing and let the client's legal team assess it. Your job is to find out how worried the candidate is and whether it's actually blocking them.\n\n## Dig deeper\n\n1. Do you have a copy of the clause itself, or is this from memory?\n2. Has anyone from your company been held to it before?\n3. If legal said it's fine, would you be ready to go?\n\n## Watch for\n\nCandidates sometimes use the non-compete as a reason not to decide. Check if it's the real blocker."
+ },
+ {
+  "file": "notice-period.md",
+  "title": "Notice period",
+  "category": "notice_period",
+  "real": "Long notice periods scare clients more than candidates. Get the contractual notice, what's realistic to negotiate down, and whether garden leave is likely. A candidate who has never checked their contract is a candidate who hasn't really pictured leaving.",
+  "ladder": [
+   "What does your contract actually say, have you looked at it recently?",
+   "Have people at your company negotiated an earlier release before?",
+   "If you were on garden leave, would you be able to start anything early?"
+  ],
+  "watch": "Three months' notice plus a counteroffer is the riskiest combination you'll see. Stay in touch weekly during notice.",
+  "text": "# Notice period\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nLong notice periods scare clients more than candidates. Get the contractual notice, what's realistic to negotiate down, and whether garden leave is likely. A candidate who has never checked their contract is a candidate who hasn't really pictured leaving.\n\n## Dig deeper\n\n1. What does your contract actually say, have you looked at it recently?\n2. Have people at your company negotiated an earlier release before?\n3. If you were on garden leave, would you be able to start anything early?\n\n## Watch for\n\nThree months' notice plus a counteroffer is the riskiest combination you'll see. Stay in touch weekly during notice."
+ },
+ {
+  "file": "offer-comparison.md",
+  "title": "Offer comparison",
+  "category": "competing_process",
+  "real": "Candidates comparing two offers tend to fixate on the biggest number and the most recent conversation. Help them build a fair comparison: money, growth, manager, commute, stability. You're not stacking the deck. If your role loses on a fair comparison, you want to know now rather than after they've resigned and then accepted a counter.",
+  "ladder": [
+   "If you scored both on manager, growth and money, where does each one win?",
+   "Which of those three matters most to you a year from now?",
+   "Who else are you talking this decision through with?"
+  ],
+  "watch": "If they keep talking about the other manager, that's your signal. Money won't fix a people gap.",
+  "text": "# Offer comparison\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nCandidates comparing two offers tend to fixate on the biggest number and the most recent conversation. Help them build a fair comparison: money, growth, manager, commute, stability. You're not stacking the deck. If your role loses on a fair comparison, you want to know now rather than after they've resigned and then accepted a counter.\n\n## Dig deeper\n\n1. If you scored both on manager, growth and money, where does each one win?\n2. Which of those three matters most to you a year from now?\n3. Who else are you talking this decision through with?\n\n## Watch for\n\nIf they keep talking about the other manager, that's your signal. Money won't fix a people gap."
+ },
+ {
+  "file": "partner-family-influence.md",
+  "title": "Partner and family influence",
+  "category": "motivation_mismatch",
+  "real": "Big career decisions get made at the kitchen table, not on the call. If the candidate keeps saying 'we', there's someone else in the decision. Find out who, and what they think.",
+  "ladder": [
+   "Who else are you talking this decision through with?",
+   "What's their take so far?",
+   "What would they need to hear to feel good about it?"
+  ],
+  "watch": "A partner who hasn't been consulted is a late-stage decline waiting to happen.",
+  "text": "# Partner and family influence\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nBig career decisions get made at the kitchen table, not on the call. If the candidate keeps saying 'we', there's someone else in the decision. Find out who, and what they think.\n\n## Dig deeper\n\n1. Who else are you talking this decision through with?\n2. What's their take so far?\n3. What would they need to hear to feel good about it?\n\n## Watch for\n\nA partner who hasn't been consulted is a late-stage decline waiting to happen."
+ },
+ {
+  "file": "passive-candidate.md",
+  "title": "Passive candidate",
+  "category": "motivation_mismatch",
+  "real": "Passive candidates aren't against moving, they just haven't found a reason. The mistake is pitching features of the job. The better move is finding the itch: the thing about their current job that annoys them a little more each month. That itch is your opening, and it's almost never about money.",
+  "ladder": [
+   "What's one thing about your current job you'd change if you could?",
+   "How long has that been bugging you?",
+   "What would have to show up for you to take a call like this seriously?"
+  ],
+  "watch": "If there's genuinely no itch, stay in touch and move on. Pushing burns the relationship.",
+  "text": "# Passive candidate\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nPassive candidates aren't against moving, they just haven't found a reason. The mistake is pitching features of the job. The better move is finding the itch: the thing about their current job that annoys them a little more each month. That itch is your opening, and it's almost never about money.\n\n## Dig deeper\n\n1. What's one thing about your current job you'd change if you could?\n2. How long has that been bugging you?\n3. What would have to show up for you to take a call like this seriously?\n\n## Watch for\n\nIf there's genuinely no itch, stay in touch and move on. Pushing burns the relationship."
+ },
+ {
+  "file": "references-backchannel.md",
+  "title": "References and backchannel",
+  "category": "company_doubt",
+  "real": "Candidates worry about backchannel references more than they admit, especially in small industries. If they get nervous at reference stage, ask why.",
+  "ladder": [
+   "Who would you want them to speak to, and who would you rather they didn't?",
+   "Is there anything a former manager might say that you'd want to get ahead of?",
+   "Would it help to brief your references before they get the call?"
+  ],
+  "watch": "Nervousness at reference stage is often about one specific person. Find out who.",
+  "text": "# References and backchannel\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nCandidates worry about backchannel references more than they admit, especially in small industries. If they get nervous at reference stage, ask why.\n\n## Dig deeper\n\n1. Who would you want them to speak to, and who would you rather they didn't?\n2. Is there anything a former manager might say that you'd want to get ahead of?\n3. Would it help to brief your references before they get the call?\n\n## Watch for\n\nNervousness at reference stage is often about one specific person. Find out who."
+ },
+ {
+  "file": "relocation.md",
+  "title": "Relocation",
+  "category": "remote_location",
+  "real": "Relocation objections are rarely about the move itself. They're about a partner's job, schools, or an ageing parent. Ask about the people, not the logistics.",
+  "ladder": [
+   "Who else does this move affect, and how do they feel about it?",
+   "What would a realistic timeline for moving look like for you?",
+   "Would a relocation package or a remote start period make a difference?"
+  ],
+  "watch": "If the partner hasn't been asked yet, the candidate hasn't really decided.",
+  "text": "# Relocation\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nRelocation objections are rarely about the move itself. They're about a partner's job, schools, or an ageing parent. Ask about the people, not the logistics.\n\n## Dig deeper\n\n1. Who else does this move affect, and how do they feel about it?\n2. What would a realistic timeline for moving look like for you?\n3. Would a relocation package or a remote start period make a difference?\n\n## Watch for\n\nIf the partner hasn't been asked yet, the candidate hasn't really decided."
+ },
+ {
+  "file": "remote-hybrid.md",
+  "title": "Remote and hybrid",
+  "category": "remote_location",
+  "real": "Office days are now one of the top three reasons offers get declined. When a candidate pushes back on days in the office, find out whether it's about time, family logistics, or principle. Each has a different fix. Time problems can sometimes be solved with flexible hours. Family logistics need specifics. Principle usually can't be moved.",
+  "ladder": [
+   "Is it the number of days, or which days, or the commute itself?",
+   "What does your week look like right now, and what would break?",
+   "If it were two days with flexible hours, would that change things?"
+  ],
+  "watch": "Check what the client will actually flex on before you float anything.",
+  "text": "# Remote and hybrid\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nOffice days are now one of the top three reasons offers get declined. When a candidate pushes back on days in the office, find out whether it's about time, family logistics, or principle. Each has a different fix. Time problems can sometimes be solved with flexible hours. Family logistics need specifics. Principle usually can't be moved.\n\n## Dig deeper\n\n1. Is it the number of days, or which days, or the commute itself?\n2. What does your week look like right now, and what would break?\n3. If it were two days with flexible hours, would that change things?\n\n## Watch for\n\nCheck what the client will actually flex on before you float anything."
+ },
+ {
+  "file": "resignation-prep.md",
+  "title": "Resignation prep",
+  "category": "counteroffer",
+  "real": "The resignation meeting is where deals fall apart. Candidates walk in nervous, get love-bombed, and walk out undecided. Prep it like an interview. Agree the words they'll use, agree they won't negotiate in the room, and agree when they'll call you afterwards.",
+  "ladder": [
+   "When are you planning to tell your manager, and what will you actually say?",
+   "If they ask what it would take to keep you, what's your answer?",
+   "Can you call me straight after, even if it's just two minutes?"
+  ],
+  "watch": "A candidate who won't commit to a resignation date is not resigning.",
+  "text": "# Resignation prep\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nThe resignation meeting is where deals fall apart. Candidates walk in nervous, get love-bombed, and walk out undecided. Prep it like an interview. Agree the words they'll use, agree they won't negotiate in the room, and agree when they'll call you afterwards.\n\n## Dig deeper\n\n1. When are you planning to tell your manager, and what will you actually say?\n2. If they ask what it would take to keep you, what's your answer?\n3. Can you call me straight after, even if it's just two minutes?\n\n## Watch for\n\nA candidate who won't commit to a resignation date is not resigning."
+ },
+ {
+  "file": "role-scope.md",
+  "title": "Role scope",
+  "category": "scope_role",
+  "real": "Vague scope is a deal killer. Candidates who aren't clear what they'd own will fill the gap with their worst fear. Get specific: what they'd own on day one, at six months, and what success looks like at a year.",
+  "ladder": [
+   "What would you want to own on day one for this to feel like a real job?",
+   "What's the part of the scope that's still fuzzy for you?",
+   "If you could ask the hiring manager one question about the role, what would it be?"
+  ],
+  "watch": "If the client can't answer the scope questions, that's a client problem. Raise it.",
+  "text": "# Role scope\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nVague scope is a deal killer. Candidates who aren't clear what they'd own will fill the gap with their worst fear. Get specific: what they'd own on day one, at six months, and what success looks like at a year.\n\n## Dig deeper\n\n1. What would you want to own on day one for this to feel like a real job?\n2. What's the part of the scope that's still fuzzy for you?\n3. If you could ask the hiring manager one question about the role, what would it be?\n\n## Watch for\n\nIf the client can't answer the scope questions, that's a client problem. Raise it."
+ },
+ {
+  "file": "salary-history-question.md",
+  "title": "Salary history",
+  "category": "comp_gap",
+  "real": "Asking for current salary is legally restricted in several places, and candidates increasingly push back on it. Ask for expectations instead, and anchor on the market, not their history.",
+  "ladder": [
+   "What are you looking for in your next package, rather than what you're on now?",
+   "Where did that expectation come from, the market, a friend, another offer?",
+   "What's the lowest number that would still feel like progress?"
+  ],
+  "watch": "Check local rules before asking about current pay at all.",
+  "text": "# Salary history\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nAsking for current salary is legally restricted in several places, and candidates increasingly push back on it. Ask for expectations instead, and anchor on the market, not their history.\n\n## Dig deeper\n\n1. What are you looking for in your next package, rather than what you're on now?\n2. Where did that expectation come from, the market, a friend, another offer?\n3. What's the lowest number that would still feel like progress?\n\n## Watch for\n\nCheck local rules before asking about current pay at all."
+ },
+ {
+  "file": "team-structure.md",
+  "title": "Team structure",
+  "category": "scope_role",
+  "real": "Who they'd work with and who they'd report to matters more than the job description. Get the team size, who's senior, and whether they'd be the only one doing what they do.",
+  "ladder": [
+   "Who would you be working with day to day, do you know yet?",
+   "Would you be the only person doing this, or part of a group?",
+   "What size team do you do your best work in?"
+  ],
+  "watch": "Being the only specialist on a team is exciting for some people and lonely for others. Ask which.",
+  "text": "# Team structure\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nWho they'd work with and who they'd report to matters more than the job description. Get the team size, who's senior, and whether they'd be the only one doing what they do.\n\n## Dig deeper\n\n1. Who would you be working with day to day, do you know yet?\n2. Would you be the only person doing this, or part of a group?\n3. What size team do you do your best work in?\n\n## Watch for\n\nBeing the only specialist on a team is exciting for some people and lonely for others. Ask which."
+ },
+ {
+  "file": "timing-objection.md",
+  "title": "Timing objection",
+  "category": "timing",
+  "real": "'Now's not the right time' is usually a polite no or a real constraint, and you have to work out which without being pushy. Real constraints have dates attached: a bonus in March, a vest in June, a wedding in August. Polite nos are vague. If there's a date, work back from it and see if the client can flex. If it's vague, the objection is something else and timing is the cover story.",
+  "ladder": [
+   "What specifically makes now tricky? Is there a date you're waiting for?",
+   "If that date had already passed, would you be moving on this?",
+   "What would need to happen between now and then for you to be ready?",
+   "Would it help if the start date was set around that?"
+  ],
+  "watch": "No date usually means no interest. Gently ask what would make it the right time, then listen for the real objection.",
+  "text": "# Timing objection\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\n'Now's not the right time' is usually a polite no or a real constraint, and you have to work out which without being pushy. Real constraints have dates attached: a bonus in March, a vest in June, a wedding in August. Polite nos are vague. If there's a date, work back from it and see if the client can flex. If it's vague, the objection is something else and timing is the cover story.\n\n## Dig deeper\n\n1. What specifically makes now tricky? Is there a date you're waiting for?\n2. If that date had already passed, would you be moving on this?\n3. What would need to happen between now and then for you to be ready?\n4. Would it help if the start date was set around that?\n\n## Watch for\n\nNo date usually means no interest. Gently ask what would make it the right time, then listen for the real objection."
+ },
+ {
+  "file": "title-concerns.md",
+  "title": "Title concerns",
+  "category": "title_level",
+  "real": "Title objections come from three places: how it looks on LinkedIn, how it affects the next job search, and pride. All three are valid. Find out which, then check what the title actually means at this client. A 'Senior' at a 40 person startup can be broader than a 'Lead' at a bank. Sometimes the client will flex the title for free, it costs them nothing.",
+  "ladder": [
+   "Is it how it looks externally, or what it says about your scope?",
+   "What title would you need to see, and why that one?",
+   "If the scope and pay were right, how much would the title still matter?",
+   "Would it help if I asked whether the title is flexible?"
+  ],
+  "watch": "Title is one of the cheapest things for a client to give. Ask early.",
+  "text": "# Title concerns\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nTitle objections come from three places: how it looks on LinkedIn, how it affects the next job search, and pride. All three are valid. Find out which, then check what the title actually means at this client. A 'Senior' at a 40 person startup can be broader than a 'Lead' at a bank. Sometimes the client will flex the title for free, it costs them nothing.\n\n## Dig deeper\n\n1. Is it how it looks externally, or what it says about your scope?\n2. What title would you need to see, and why that one?\n3. If the scope and pay were right, how much would the title still matter?\n4. Would it help if I asked whether the title is flexible?\n\n## Watch for\n\nTitle is one of the cheapest things for a client to give. Ask early."
+ },
+ {
+  "file": "trial-close.md",
+  "title": "Trial close",
+  "category": "commitment_signal",
+  "real": "A trial close checks commitment without asking for the final yes. Use it after every major objection is handled, so you're never surprised at the offer stage.",
+  "ladder": [
+   "If they came back with that number, would you accept it?",
+   "Is there anyone else who needs to be comfortable with this before you say yes?",
+   "What would you say to them if they called you tomorrow with an offer?"
+  ],
+  "watch": "Hesitation on a trial close is gold. It means there's an objection left, and you found it early.",
+  "text": "# Trial close\n\n> MOCK DATA. Written for the Caddy Lab prototype to stand in for a real recruiting best-practice corpus.\n\n## What's really going on\n\nA trial close checks commitment without asking for the final yes. Use it after every major objection is handled, so you're never surprised at the offer stage.\n\n## Dig deeper\n\n1. If they came back with that number, would you accept it?\n2. Is there anyone else who needs to be comfortable with this before you say yes?\n3. What would you say to them if they called you tomorrow with an offer?\n\n## Watch for\n\nHesitation on a trial close is gold. It means there's an objection left, and you found it early."
+ }
+]
