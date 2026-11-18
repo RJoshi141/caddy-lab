@@ -1,6 +1,6 @@
 "use client";
-// The hero screen. Two numbers up front, the levers right under them,
-// and the working tucked away until someone asks.
+// The cost story in three beats: where the thinking happens, what a call hour
+// costs each way, and what that means at scale. Everything else is in Details.
 import { useEffect, useState } from "react";
 import { useSession } from "@/app/session";
 import { CALL_DEFAULTS, CORPUS, MODELS, NAIVE_OPTIONS, type ModelId } from "@/lib/config";
@@ -10,211 +10,149 @@ import { SCENARIOS } from "@/data/transcripts";
 import { Icon, type IconName } from "@/components/Icon";
 import { Disclosure, Switch, Tabs, useTween } from "@/components/ui";
 
+const SCENARIO = SCENARIOS[0]; // same call as the demo on the Call tab
+
 export default function CostPage() {
   const session = useSession();
-  const [scenarioId, setScenarioId] = useState(SCENARIOS[0].id);
   const [sizes, setSizes] = useState<{ mode: string; sizes: TokenSizes } | null>(null);
   const [a, setA] = useState<Assumptions>({ ...CALL_DEFAULTS, naiveCaching: false });
   const [naiveModel, setNaiveModel] = useState<ModelId>(MODELS.naive);
   const [scale, setScale] = useState({ recruiters: 1000, hoursPerDay: 3, days: 21 });
 
   useEffect(() => {
-    fetch("/api/tokens", { method: "POST", headers: session.headers(), body: JSON.stringify({ scenarioId }) })
+    fetch("/api/tokens", { method: "POST", headers: session.headers(), body: JSON.stringify({ scenarioId: SCENARIO.id }) })
       .then((r) => r.json())
       .then(setSizes);
-  }, [scenarioId, session.mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [session.mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const dealId = SCENARIOS.find((s) => s.id === scenarioId)!.dealId;
+  const dealId = SCENARIO.dealId;
   const briefUsage = session.briefs[dealId]?.mode === "live" ? session.briefs[dealId].usage : MOCK_BRIEFS[dealId].usage;
 
   const naive = sizes ? naivePerHour(sizes.sizes, a, naiveModel) : null;
   const caddy = sizes ? caddyPerHour(sizes.sizes, a, briefUsage, MODELS.refine) : null;
   const naiveShown = useTween(naive?.total ?? 0);
   const caddyShown = useTween(caddy?.total ?? 0);
-  const ratio = naive && caddy ? naive.total / caddy.total : 0;
-  const ratioShown = useTween(ratio);
+  const ratioShown = useTween(naive && caddy ? naive.total / caddy.total : 0);
   const hoursPerMonth = scale.recruiters * scale.hoursPerDay * scale.days;
   const corpus = corpusPassCost();
 
   if (!sizes || !naive || !caddy) {
     return (
-      <div className="py-20 flex items-center justify-center gap-2 text-ink-3">
+      <div className="py-24 flex items-center justify-center gap-2 text-ink-3">
         <Icon name="loader" size={16} className="spin" /> Counting tokens…
       </div>
     );
   }
 
-  const live = session.spend.filter((s) => !s.mock);
-  const liveTotal = live.reduce((t, s) => t + usageCost(s.usage), 0);
-  const refines = session.spend.filter((s) => s.kind === "refine");
-  const avgRefineMs = refines.length ? refines.reduce((t, s) => t + s.ms, 0) / refines.length : 0;
   const modelName = (m: string) => (m.includes("opus") ? "Opus" : "Sonnet");
+  const live = session.spend.filter((s) => !s.mock);
+  const steps: { when: string; icon: IconName; what: string; cost: string }[] = [
+    { when: "Once, overnight", icon: "layers", what: `Read all ${CORPUS.deals.toLocaleString()} deals and ${CORPUS.docs.toLocaleString()} docs`, cost: `~$${Math.round(corpus.total)} once` },
+    { when: "Before each call", icon: "clipboard", what: "Write this deal's brief", cost: `${fmt$(caddy.brief / (60 / a.callMinutes))} a call` },
+    { when: "During the call", icon: "zap", what: "Look up, sharpen only on pushback", cost: `${fmt$(caddy.refine)} an hour` },
+    { when: "After the call", icon: "trend", what: "Outcomes feed back in", cost: "$0" },
+  ];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <div>
-        <h1 className="display text-3xl font-semibold">What one call hour costs</h1>
-        <p className="text-ink-2 mt-1">Spend tokens on the corpus once, not on every line of every call.</p>
-      </div>
+    <div className="max-w-[1180px] mx-auto space-y-6">
+      <header className="pt-2">
+        <h1 className="display text-3xl font-semibold">Spend on the corpus once, not on every line.</h1>
+      </header>
 
-      {/* The architecture, as a cost story: spend on the corpus once, not on every call */}
-      <section className="panel p-5" aria-labelledby="where-title">
-        <h2 id="where-title" className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-4">
-          <Icon name="layers" size={13} /> Where the thinking happens
-        </h2>
-        <ol className="grid gap-3 md:grid-cols-4">
-          {[
-            { when: "Once, overnight", icon: "layers" as IconName, what: `Read all ${CORPUS.deals.toLocaleString()} deals and ${CORPUS.docs.toLocaleString()} docs. Turn them into situations, questions and what actually worked.`, model: "Haiku + Sonnet, batch", cost: `~$${Math.round(corpus.total)}, once` },
-            { when: "Before each call", icon: "clipboard" as IconName, what: "Pick the slice of the corpus that matches this deal. Write its follow-up questions.", model: "Sonnet, once", cost: `${fmt$(caddy.brief / (60 / a.callMinutes))} a call` },
-            { when: "During the call", icon: "zap" as IconName, what: "Match what the candidate says to a prepared question. Sharpen it only when it helps.", model: "Local, then Haiku", cost: `${fmt$(caddy.refine)} an hour` },
-            { when: "After the call", icon: "trend" as IconName, what: "What recruiters ask, and how deals end, updates what gets prepared next time.", model: "No model", cost: "$0" },
-          ].map((st, i) => (
-            <li key={st.when} className="relative rounded-xl bg-paper p-4 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="grid place-items-center w-7 h-7 rounded-lg bg-card text-fast"><Icon name={st.icon} size={14} /></span>
-                <span className="text-sm font-semibold">{st.when}</span>
-              </div>
-              <p className="text-sm text-ink-2 leading-snug flex-1">{st.what}</p>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-ink-3">{st.model}</span>
-                <span className="num font-semibold text-fast">{st.cost}</span>
-              </div>
-              {i < 3 && <span aria-hidden="true" className="hidden md:block absolute -right-2.5 top-1/2 -translate-y-1/2 z-[1] text-ink-3">›</span>}
+      {/* Where the thinking happens: a timeline, not a table */}
+      <section className="panel px-6 py-5" aria-label="Where the thinking happens">
+        <ol className="grid gap-5 md:grid-cols-4 relative">
+          {steps.map((st, i) => (
+            <li key={st.when} className="relative">
+              {/* Connector to the next step */}
+              {i < steps.length - 1 && <span aria-hidden="true" className="hidden md:block absolute left-10 -right-3 top-4 h-px bg-line" />}
+              <span className="relative z-[1] grid place-items-center w-8 h-8 rounded-full bg-fast-soft text-fast ring-4 ring-card">
+                <Icon name={st.icon} size={14} />
+              </span>
+              <div className="mt-3 text-sm font-semibold">{st.when}</div>
+              <div className="text-sm text-ink-3 leading-snug">{st.what}</div>
+              <div className="num text-sm font-semibold text-fast mt-1.5">{st.cost}</div>
             </li>
           ))}
         </ol>
       </section>
 
-      {/* The two numbers */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="panel lift p-6">
-          <div className="flex items-center gap-2 text-sm text-ink-2">
-            <span className="grid place-items-center w-7 h-7 rounded-lg bg-paper"><Icon name="alert" size={14} /></span>
-            Naive: {modelName(naiveModel)} on every line
+      {/* One comparison, one bar, two levers */}
+      <section className="panel overflow-hidden" aria-label="Cost per call hour">
+        <div className="grid md:grid-cols-2">
+          <div className="p-7">
+            <div className="text-sm text-ink-3">{modelName(naiveModel)} on every line</div>
+            <div className="num text-5xl font-semibold mt-2">{fmt$(naiveShown)}</div>
+            <div className="text-sm text-ink-3 mt-1">per call hour · {naive.calls} big-model calls</div>
           </div>
-          <div className="num text-5xl font-semibold mt-4">{fmt$(naiveShown)}</div>
-          <div className="text-sm text-ink-3 mt-1">per call hour · {naive.calls} big-model calls</div>
-          <Stack
-            parts={[
-              { label: "Playbook + deal, resent every line", v: naive.prefixCost, cls: "bg-ink" },
-              { label: "Transcript, growing", v: naive.transcriptCost, cls: "bg-ink/60" },
-              { label: "Output", v: naive.outputCost, cls: "bg-ink/30" },
-            ]}
-            total={naive.total}
-          />
+          <div className="p-7 md:border-l border-t md:border-t-0 border-line">
+            <div className="flex items-center gap-2 text-sm text-fast">
+              Caddy Lab
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-fast-soft font-medium">
+                <span className="num">{ratioShown.toFixed(0)}x</span> cheaper
+              </span>
+            </div>
+            <div className="num text-5xl font-semibold mt-2 text-fast">{fmt$(caddyShown)}</div>
+            <div className="text-sm text-ink-3 mt-1">per call hour · 1 brief + {caddy.calls} small-model calls</div>
+          </div>
         </div>
 
-        <div className="panel lift p-6 border-fast/30">
-          <div className="flex items-center gap-2 text-sm text-fast">
-            <span className="grid place-items-center w-7 h-7 rounded-lg bg-fast-soft"><Icon name="zap" size={14} /></span>
-            Caddy Lab: think before, look up during
-          </div>
-          <div className="num text-5xl font-semibold mt-4 text-fast">{fmt$(caddyShown)}</div>
-          <div className="text-sm text-ink-3 mt-1 flex flex-wrap items-center gap-2">
-            per call hour · 1 brief + {caddy.calls} small-model calls
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-fast-soft text-fast font-medium">
-              <Icon name="trend" size={12} />
-              <span className="num">{ratioShown.toFixed(0)}x</span> cheaper
-            </span>
-          </div>
-          <Stack
-            parts={[
-              { label: "Pre-call brief (Sonnet)", v: caddy.brief, cls: "bg-fast" },
-              { label: "Refinements (Haiku, cached)", v: caddy.refine, cls: "bg-fast/50" },
-              { label: "Fast path", v: 0, cls: "bg-fast/20" },
-            ]}
-            total={caddy.total}
-            note="Fast path makes no model calls"
-          />
+        {/* The bar is the argument: same scale, so the gap is the point */}
+        <div className="px-7 pb-6 space-y-2">
+          <div className="h-2 rounded-full bg-ink/80 transition-[width] duration-500" style={{ width: "100%" }} />
+          <div className="h-2 rounded-full bg-fast transition-[width] duration-500" style={{ width: `${Math.max(0.8, (caddy.total / naive.total) * 100)}%` }} />
         </div>
-      </div>
 
-      {/* The levers people actually want to flip */}
-      <div className="panel px-5 py-4 flex flex-wrap items-center gap-x-6 gap-y-3">
-        <Switch checked={a.naiveCaching} onChange={(v) => setA({ ...a, naiveCaching: v })} label="Give naive prompt caching too" />
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-ink-3">Naive model</span>
+        <div className="px-7 py-4 border-t border-line bg-paper/60 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <Switch checked={a.naiveCaching} onChange={(v) => setA({ ...a, naiveCaching: v })} label="Give naive prompt caching too" />
           <div className="w-40">
             <Tabs tabs={NAIVE_OPTIONS.map((m) => ({ id: m, label: modelName(m) }))} value={naiveModel as (typeof NAIVE_OPTIONS)[number]} onChange={(v) => setNaiveModel(v)} />
           </div>
+          <span className="ml-auto text-xs text-ink-3">
+            {sizes.mode === "counted" ? "Token sizes counted by the API" : "Mock mode: token sizes estimated"}
+          </span>
         </div>
-        <label className="ml-auto flex items-center gap-2 text-sm">
-          <span className="text-ink-3">Scenario</span>
-          <select value={scenarioId} onChange={(e) => setScenarioId(e.target.value)} className="px-2.5 py-1.5 rounded-lg border border-line bg-paper">
-            {SCENARIOS.map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}
-          </select>
-        </label>
-      </div>
+      </section>
 
-      {/* At scale, as a sentence */}
-      <div className="panel p-6">
-        <div className="flex items-center gap-2 text-sm text-ink-2 mb-3">
-          <Icon name="users" size={14} /> At scale
-        </div>
-        <p className="text-lg leading-relaxed">
-          With <b className="num font-semibold">{scale.recruiters.toLocaleString()}</b> recruiters on <b className="num font-semibold">{scale.hoursPerDay}</b> call hours a day, that&apos;s{" "}
-          <span className="num font-semibold">{fmt$(naive.total * hoursPerMonth)}</span> a month the naive way, or{" "}
-          <span className="num font-semibold text-fast">{fmt$(caddy.total * hoursPerMonth)}</span> with Caddy Lab.
-        </p>
-      </div>
+      {/* At scale, as one sentence */}
+      <p className="text-center text-ink-2 py-2">
+        At {scale.recruiters.toLocaleString()} recruiters on {scale.hoursPerDay} call hours a day, that&apos;s{" "}
+        <span className="num font-semibold text-ink">{fmt$(naive.total * hoursPerMonth)}</span> a month, or{" "}
+        <span className="num font-semibold text-fast">{fmt$(caddy.total * hoursPerMonth)}</span>.
+      </p>
 
-      {/* Everything else, on demand */}
-      <div className="panel px-5 py-3 divide-y divide-line">
-        <Disclosure title="Adjust assumptions" icon="gauge" className="py-2">
-          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5 pt-3 pb-2 text-sm">
-            <Num label="Call length (minutes)" value={a.callMinutes} step={5} onChange={(v) => setA({ ...a, callMinutes: v })} />
-            <Num label="Recruiters on calls" value={scale.recruiters} step={100} onChange={(v) => setScale({ ...scale, recruiters: v })} />
-            <Num label="Utterances per hour" value={a.utterancesPerHour} step={10} onChange={(v) => setA({ ...a, utterancesPerHour: v })} />
-            <Num label="Call hours per day" value={scale.hoursPerDay} step={1} onChange={(v) => setScale({ ...scale, hoursPerDay: v })} />
-            <Num label="Share that trigger a refinement" value={a.pushbackShare} step={0.05} onChange={(v) => setA({ ...a, pushbackShare: v })} />
-            <Num label="Working days" value={scale.days} step={1} onChange={(v) => setScale({ ...scale, days: v })} />
-          </div>
-        </Disclosure>
-        <Disclosure title="How these numbers are made" icon="info" className="py-2">
-          <div className="grid sm:grid-cols-3 gap-6 pt-3 pb-2 text-sm">
-            <Fact icon="layers" title="Token sizes">
-              <ul className="num text-xs text-ink-2 space-y-0.5">
-                <li>naive prefix {sizes.sizes.naivePrefix.toLocaleString()}</li>
-                <li>per transcript line {sizes.sizes.tokensPerLine}</li>
-                <li>refine cached prefix {sizes.sizes.refinePrefix.toLocaleString()}</li>
-                <li>refine tail {sizes.sizes.refineTail}</li>
-              </ul>
-              <p className="text-xs text-ink-3 mt-2">{sizes.mode === "counted" ? "Counted with the API's token counter." : "Estimated at 4 characters a token (mock mode)."}</p>
-            </Fact>
-            <Fact icon="clock" title="This session">
-              <p className="text-ink-2">{session.spend.length} API results seen, {live.length} live.</p>
-              <p className="num text-ink-2">{fmt$(liveTotal)} real spend</p>
-              {avgRefineMs > 0 && <p className="text-ink-3 text-xs mt-1">avg refine {Math.round(avgRefineMs)} ms{refines.every((r) => r.mock) ? " (simulated)" : ""}</p>}
-            </Fact>
-            <Fact icon="zap" title="Latency">
-              <p className="text-ink-2">Naive waits on a big model before anything shows. Caddy Lab shows a question in milliseconds and only upgrades it if Haiku finds something better.</p>
-            </Fact>
+      {/* Everything else */}
+      <div className="panel px-5 py-2">
+        <Disclosure title="Details" icon="info" className="py-2">
+          <div className="grid md:grid-cols-2 gap-x-10 gap-y-6 pt-3 pb-3 text-sm">
+            <div className="space-y-2.5">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-3">Assumptions</h3>
+              <Num label="Call length (minutes)" value={a.callMinutes} step={5} onChange={(v) => setA({ ...a, callMinutes: v })} />
+              <Num label="Utterances per hour" value={a.utterancesPerHour} step={10} onChange={(v) => setA({ ...a, utterancesPerHour: v })} />
+              <Num label="Share that trigger a refinement" value={a.pushbackShare} step={0.05} onChange={(v) => setA({ ...a, pushbackShare: v })} />
+              <Num label="Recruiters on calls" value={scale.recruiters} step={100} onChange={(v) => setScale({ ...scale, recruiters: v })} />
+              <Num label="Call hours per day" value={scale.hoursPerDay} step={1} onChange={(v) => setScale({ ...scale, hoursPerDay: v })} />
+              <Num label="Working days" value={scale.days} step={1} onChange={(v) => setScale({ ...scale, days: v })} />
+            </div>
+            <div className="space-y-5">
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-3 mb-2">Where each hour goes</h3>
+                <Split label="Naive" parts={[["Playbook + deal, resent every line", naive.prefixCost], ["Growing transcript", naive.transcriptCost], ["Output", naive.outputCost]]} />
+                <Split label="Caddy Lab" parts={[["Brief", caddy.brief], ["Haiku, cached prefix", caddy.refine], ["Fast path", 0]]} />
+              </div>
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-3 mb-2">Token sizes</h3>
+                <p className="num text-xs text-ink-2">
+                  naive prefix {sizes.sizes.naivePrefix.toLocaleString()} · per line {sizes.sizes.tokensPerLine} · refine prefix {sizes.sizes.refinePrefix.toLocaleString()} · refine tail {sizes.sizes.refineTail}
+                </p>
+              </div>
+              <p className="text-xs text-ink-3">
+                This session: {session.spend.length} API results, {live.length} live, <span className="num">{fmt$(live.reduce((t, s) => t + usageCost(s.usage), 0))}</span> real spend.
+              </p>
+            </div>
           </div>
         </Disclosure>
       </div>
-    </div>
-  );
-}
-
-// One stacked bar instead of three: the shape tells the story, hover gives the numbers.
-function Stack({ parts, total, note }: { parts: { label: string; v: number; cls: string }[]; total: number; note?: string }) {
-  return (
-    <div className="mt-6">
-      <div className="flex h-2.5 rounded-full overflow-hidden bg-paper">
-        {parts.filter((p) => p.v > 0).map((p) => (
-          <div key={p.label} title={`${p.label}: ${fmt$(p.v)}`} className={`${p.cls} transition-[width] duration-500`} style={{ width: `${(p.v / total) * 100}%` }} />
-        ))}
-      </div>
-      <ul className="mt-3 space-y-1 text-xs">
-        {parts.map((p) => (
-          <li key={p.label} className="flex items-center gap-2 text-ink-3">
-            <span className={`w-2 h-2 rounded-sm ${p.cls}`} />
-            <span className="flex-1">{p.label}</span>
-            <span className="num">{fmt$(p.v)}</span>
-          </li>
-        ))}
-      </ul>
-      {note && <p className="mt-2 text-xs text-ink-3">{note}</p>}
     </div>
   );
 }
@@ -228,11 +166,15 @@ function Num({ label, value, step, onChange }: { label: string; value: number; s
   );
 }
 
-function Fact({ icon, title, children }: { icon: IconName; title: string; children: React.ReactNode }) {
+function Split({ label, parts }: { label: string; parts: [string, number][] }) {
   return (
-    <div>
-      <h3 className="flex items-center gap-1.5 font-semibold mb-1.5"><Icon name={icon} size={13} />{title}</h3>
-      {children}
+    <div className="mb-3">
+      <div className="text-ink-2 mb-1">{label}</div>
+      <ul className="space-y-0.5 text-xs text-ink-3">
+        {parts.map(([k, v]) => (
+          <li key={k} className="flex justify-between"><span>{k}</span><span className="num">{fmt$(v)}</span></li>
+        ))}
+      </ul>
     </div>
   );
 }
