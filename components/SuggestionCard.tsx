@@ -1,7 +1,9 @@
 "use client";
 import { CATEGORY_BY_ID } from "@/data/categories";
 import type { Suggestion } from "@/lib/fastpath";
+import { useState } from "react";
 import { CATEGORY_ICON, Icon, type IconName } from "./Icon";
+import { Collapse } from "./ui";
 
 export type CardData = Suggestion & { files?: string[]; pending?: boolean; acted?: "used" | "ignored" };
 
@@ -14,6 +16,7 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
   const cat = CATEGORY_BY_ID[s.categoryId];
   const source = swapped && s.refined?.playbookRef ? s.refined.playbookRef : s.playbookRef;
   const dots = Math.max(ladderSize, s.rung + 1);
+  const [more, setMore] = useState(false);
 
   return (
     <article className={`rise panel p-6 shadow-[0_10px_30px_-20px_rgb(23_25_29/0.35)] ${s.acted === "used" ? "border-fast/40" : ""}`}>
@@ -31,13 +34,12 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
           </span>
           Follow-up {s.rung + 1}
         </span>
-        <span className={`flex items-center gap-1 ${s.source === "brief" ? "text-fast" : "text-ink-3"}`}>
-          <Icon name={s.source === "brief" ? "target" : "file"} size={12} />
-          {s.source === "brief" ? "Deal specific" : "Generic playbook"}
-        </span>
-        <span className="ml-auto flex items-center gap-1 num text-ink-3 px-2 py-0.5 rounded-full bg-paper" title="Fast path: no model call">
+        <span
+          className="ml-auto flex items-center gap-1 num text-ink-3 px-2 py-0.5 rounded-full bg-paper cursor-help"
+          title={`Fast path via ${s.method}. No model call.`}
+        >
           <Icon name="zap" size={12} className="text-fast" />
-          {ms(s.latencyMs)} · {s.method}
+          {ms(s.latencyMs)}
         </span>
       </div>
 
@@ -73,11 +75,17 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
         )}
       </div>
 
-      {/* Why this question */}
-      <section className="mt-5 pt-5 border-t border-line">
-        <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-3">
-          <Icon name="bulb" size={13} /> Why this question
-        </h3>
+      {/* Why this question: the two rows that matter, the rest on demand */}
+      <section className="mt-5 pt-4 border-t border-line">
+        <div className="flex items-center mb-3">
+          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2">
+            <Icon name="bulb" size={13} /> Why this question
+          </h3>
+          <button onClick={() => setMore((m) => !m)} aria-expanded={more} className="press ml-auto flex items-center gap-1 text-xs text-ink-3 hover:text-ink px-2 py-1 rounded-lg hover:bg-paper">
+            {more ? "Less" : "More"}
+            <Icon name="chevron" size={13} className={`transition-transform duration-300 ${more ? "rotate-180" : ""}`} />
+          </button>
+        </div>
         <dl className="grid grid-cols-[150px_1fr] gap-x-3 gap-y-2.5 text-sm">
           <Row icon="ear" label="Heard">
             <div className="flex flex-wrap gap-1.5">
@@ -86,30 +94,35 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
               ))}
             </div>
           </Row>
-          <Row icon="clipboard" label="Brief predicted">
-            <span className="text-ink-2">{s.briefSignals.length ? s.briefSignals.join(", ") : "Nothing for this follow-up"}</span>
-          </Row>
-          <Row icon="target" label="Why for this deal">
-            <span className="text-ink-2">{s.why}</span>
-          </Row>
           <Row icon="file" label="Source">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <button onClick={() => onPeek(source)} className="press num text-xs px-2 py-0.5 rounded-md border border-line bg-paper hover:border-ink/30">
-                {source}
-              </button>
-              {s.files && (
-                <span className="text-ink-3 text-xs">
-                  slow path also read{" "}
-                  {s.files.filter((f) => f !== source).map((f, i, a) => (
-                    <button key={f} onClick={() => onPeek(f)} className="num hover:text-ink underline decoration-line underline-offset-2">
-                      {f}{i < a.length - 1 ? ", " : ""}
-                    </button>
-                  ))}
-                </span>
-              )}
-            </div>
+            <button onClick={() => onPeek(source)} className="press num text-xs px-2 py-0.5 rounded-md border border-line bg-paper hover:border-ink/30">
+              {source}
+            </button>
           </Row>
         </dl>
+        <Collapse open={more}>
+          <dl className="grid grid-cols-[150px_1fr] gap-x-3 gap-y-2.5 text-sm pt-2.5">
+            <Row icon="target" label="Why for this deal">
+              <span className="text-ink-2">{s.why}</span>
+              <span className={`mt-1 flex items-center gap-1 text-xs ${s.source === "brief" ? "text-fast" : "text-ink-3"}`}>
+                <Icon name={s.source === "brief" ? "target" : "file"} size={11} />
+                {s.source === "brief" ? "Written for this deal in the brief" : "Generic playbook question"}
+              </span>
+            </Row>
+            <Row icon="clipboard" label="Brief predicted">
+              <span className="text-ink-2">{s.briefSignals.length ? s.briefSignals.join(", ") : "Nothing for this follow-up"}</span>
+            </Row>
+            {s.files && (
+              <Row icon="layers" label="Haiku also read">
+                <div className="flex flex-wrap gap-x-2 gap-y-1">
+                  {s.files.filter((f) => f !== source).map((f) => (
+                    <button key={f} onClick={() => onPeek(f)} className="num text-xs text-ink-3 hover:text-ink underline decoration-line underline-offset-2">{f}</button>
+                  ))}
+                </div>
+              </Row>
+            )}
+          </dl>
+        </Collapse>
       </section>
 
       <div className="mt-5 flex gap-2">
@@ -127,7 +140,7 @@ function Row({ icon, label, children }: { icon: IconName; label: string; childre
       <dt className="flex items-center gap-1.5 text-ink-3">
         <Icon name={icon} size={13} /> {label}
       </dt>
-      <dd>{children}</dd>
+      <dd className="min-w-0 flex flex-col items-start">{children}</dd>
     </>
   );
 }
@@ -146,7 +159,7 @@ function ActButton({ active, disabled, onClick, icon, label }: { active: boolean
 }
 
 // Compact row for earlier suggestions.
-export function SuggestionRow({ s, onPeek }: { s: CardData; onPeek: (file: string) => void }) {
+export function SuggestionRow({ s }: { s: CardData }) {
   const swapped = s.refined?.swapped;
   const q = swapped ? s.refined!.question : s.question;
   return (
@@ -163,7 +176,6 @@ export function SuggestionRow({ s, onPeek }: { s: CardData; onPeek: (file: strin
           {s.refined && !swapped && s.refined.question && <span className="flex items-center gap-1 text-slow"><Icon name="sparkles" size={11} /> late option</span>}
           {s.refined && !s.refined.question && <span className="flex items-center gap-1"><Icon name="check" size={11} /> kept</span>}
           {s.acted && <span className="flex items-center gap-1"><Icon name={s.acted === "used" ? "thumbsUp" : "x"} size={11} /> {s.acted}</span>}
-          <button onClick={() => onPeek(s.playbookRef)} className="num hover:text-ink">{s.playbookRef}</button>
         </div>
       </div>
     </div>

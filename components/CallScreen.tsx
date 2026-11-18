@@ -12,6 +12,7 @@ import { appendLog, readLog, type LogEntry } from "@/lib/log";
 import { FASTPATH } from "@/lib/config";
 import { SuggestionCard, SuggestionRow } from "./SuggestionCard";
 import { CATEGORY_ICON, Icon } from "./Icon";
+import { Disclosure } from "./ui";
 import { CATEGORY_BY_ID } from "@/data/categories";
 import { BriefPanel } from "./BriefPanel";
 import { LearningLoop } from "./LearningLoop";
@@ -234,7 +235,7 @@ export function CallScreen() {
             const isCand = l.speaker === "candidate";
             const latest = i === idx - 1;
             return (
-              <li key={i} className={`rise flex gap-2 ${isCand ? "" : "flex-row-reverse"}`}>
+              <li key={i} className={`rise flex gap-2 transition-opacity duration-500 hover:opacity-100 ${isCand ? "" : "flex-row-reverse"} ${i < idx - 4 ? "opacity-45" : ""}`}>
                 <span className={`mt-5 shrink-0 grid place-items-center w-7 h-7 rounded-full text-[11px] font-semibold ${isCand ? "bg-ink text-paper" : "bg-line text-ink-2"}`}>
                   {isCand ? firstName[0] : "R"}
                 </span>
@@ -280,12 +281,11 @@ export function CallScreen() {
           </div>
         )}
         {history.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-3 pt-2">
-              <Icon name="clock" size={12} /> Earlier on this call
-            </h3>
-            {history.map((c) => <SuggestionRow key={c.id} s={c} onPeek={setPeek} />)}
-          </div>
+          <Disclosure title="Earlier on this call" icon="clock" meta={<span className="num">{history.length}</span>} className="pt-1">
+            <div className="space-y-2 pt-2">
+              {history.map((c) => <SuggestionRow key={c.id} s={c} />)}
+            </div>
+          </Disclosure>
         )}
       </section>
 

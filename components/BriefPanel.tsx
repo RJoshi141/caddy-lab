@@ -3,7 +3,9 @@ import type { Deal } from "@/data/deals";
 import type { Brief, Usage } from "@/lib/schemas";
 import { fmt$, usageCost } from "@/lib/cost";
 import { CATEGORY_BY_ID } from "@/data/categories";
+import { useState } from "react";
 import { CATEGORY_ICON, Icon, type IconName } from "./Icon";
+import { Tabs } from "./ui";
 
 const SEV = {
   high: { label: "High", cls: "bg-risk-soft text-risk" },
@@ -13,6 +15,8 @@ const SEV = {
 
 // progress: how many follow-ups per category have been shown on this call.
 export function BriefPanel({ deal, data, loading, onRegenerate, live, progress }: { deal: Deal; data?: { brief: Brief; usage: Usage; mode: string }; loading: boolean; onRegenerate: () => void; live: boolean; progress: Record<string, number> }) {
+  const [tab, setTab] = useState<"risks" | "wants">("risks");
+  const [full, setFull] = useState(false);
   return (
     <section className="panel p-5 text-sm" aria-labelledby="brief-title">
       <div className="flex items-center gap-2">
@@ -47,29 +51,42 @@ export function BriefPanel({ deal, data, loading, onRegenerate, live, progress }
 
       {data && (
         <div className="mt-4 space-y-5">
-          <p className="text-ink-2 leading-relaxed">{data.brief.summary}</p>
+          {/* Summary: two lines, expand on demand */}
+          <div>
+            <p className={`text-ink-2 leading-relaxed ${full ? "" : "line-clamp-2"}`}>{data.brief.summary}</p>
+            <button onClick={() => setFull((f) => !f)} className="mt-1 text-xs text-ink-3 hover:text-ink">{full ? "Show less" : "Read more"}</button>
+          </div>
 
-          <Block icon="alert" title="Risk signals">
-            <ul className="space-y-2">
-              {data.brief.riskSignals.map((r) => (
-                <li key={r.signal} className="flex items-start gap-2">
-                  <span className={`mt-0.5 shrink-0 text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${SEV[r.severity].cls}`}>{SEV[r.severity].label}</span>
-                  <span>
-                    <span className="font-medium">{r.signal}</span>
-                    <span className="block text-xs text-ink-3">{r.evidence}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Block>
-
-          <Block icon="heart" title="Motivations">
-            <ul className="space-y-1 text-ink-2">
-              {data.brief.motivations.map((m) => (
-                <li key={m} className="flex gap-2"><span className="text-fast">·</span>{m}</li>
-              ))}
-            </ul>
-          </Block>
+          {/* One view at a time instead of everything stacked */}
+          <div className="space-y-3">
+            <Tabs
+              tabs={[
+                { id: "risks", label: "Risks", count: data.brief.riskSignals.length },
+                { id: "wants", label: "Motivations", count: data.brief.motivations.length },
+              ]}
+              value={tab}
+              onChange={setTab}
+            />
+            {tab === "risks" ? (
+              <ul key="risks" className="rise space-y-2.5">
+                {data.brief.riskSignals.map((r) => (
+                  <li key={r.signal} className="group flex items-start gap-2" title={r.evidence}>
+                    <span className={`mt-1.5 shrink-0 w-2 h-2 rounded-full ${r.severity === "high" ? "bg-risk" : r.severity === "med" ? "bg-slow" : "bg-ink-3"}`} aria-label={SEV[r.severity].label} />
+                    <span className="min-w-0">
+                      <span className="font-medium">{r.signal}</span>
+                      <span className="block text-xs text-ink-3 line-clamp-1 group-hover:line-clamp-none">{r.evidence}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <ul key="wants" className="rise space-y-1.5 text-ink-2">
+                {data.brief.motivations.map((m) => (
+                  <li key={m} className="flex gap-2"><Icon name="heart" size={12} className="mt-1 text-fast" />{m}</li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           <Block icon="layers" title="Follow-ups ready">
             <ul className="space-y-2">
