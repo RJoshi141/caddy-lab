@@ -58,6 +58,7 @@ export function SuggestionCard({ s, primary, onAct, onPeek }: Props) {
         <>
           {/* Why this question */}
           <div className="mt-4 pt-4 border-t border-line grid grid-cols-[110px_1fr] gap-y-2 text-sm">
+            <h3 className="col-span-2 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-1">Why this question</h3>
             <span className="text-ink-3">Heard</span>
             <div className="flex flex-wrap gap-1">
               {s.matchedSignals.map((x) => (
