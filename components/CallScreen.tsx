@@ -14,7 +14,6 @@ import { ASKED_THRESHOLD, askedSimilarity } from "@/lib/match";
 import { MOMENT, SuggestionCard, SuggestionRow } from "./SuggestionCard";
 import { CATEGORY_ICON, Icon } from "./Icon";
 import { Disclosure } from "./ui";
-import { CATEGORY_BY_ID } from "@/data/categories";
 import { BriefPanel } from "./BriefPanel";
 import { LearningLoop } from "./LearningLoop";
 
@@ -31,7 +30,7 @@ export function CallScreen() {
 
   const [idx, setIdx] = useState(0); // next line to play
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed] = useState(1); // one speed: fewer controls
   const [cards, setCards] = useState<Card[]>([]);
   const [briefLoading, setBriefLoading] = useState(false);
   const [peek, setPeek] = useState<string | null>(null);
@@ -45,6 +44,7 @@ export function CallScreen() {
   // The line currently being "heard": words appear like live captions.
   const [streaming, setStreaming] = useState<{ i: number; words: number } | null>(null);
   const runId = useRef(0);
+  const [briefOpen, setBriefOpen] = useState(false);
   const [heard, setHeard] = useState(0); // lines fully processed
   const feed = useRef<HTMLOListElement>(null);
   // Keep the newest line in view, like a live caption feed.
@@ -214,93 +214,86 @@ export function CallScreen() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(t.tagName) || peek) return;
+      if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(t.tagName) || peek || briefOpen) return;
       if (e.key === " " && ready && !done) { e.preventDefault(); setPlaying((p) => !p); }
       if (e.key === "ArrowRight" && ready && !playing) { e.preventDefault(); next(); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [ready, done, playing, next, peek]);
+  }, [ready, done, playing, next, peek, briefOpen]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,370px)_1fr_minmax(290px,340px)] gap-5 items-start">
-      {/* Live call: scenario, controls, transcript */}
-      <section className="panel flex flex-col lg:sticky lg:top-20 max-h-[calc(100vh-110px)]" aria-labelledby="call-title">
-        <div className="p-4 border-b border-line space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="relative grid place-items-center w-7 h-7 rounded-lg bg-fast-soft text-fast">
-              <Icon name="phone" size={14} />
-              {playing && <span className="ping absolute inset-0 rounded-lg border border-fast" />}
-            </span>
-            <div>
-              <h2 id="call-title" className="font-semibold leading-tight">Live call</h2>
-              <p className="text-xs text-ink-3">{streaming ? `${scenario.lines[streaming.i].speaker === "candidate" ? firstName : "You"} speaking…` : playing ? "Listening…" : done ? "Call ended" : idx === 0 ? "Ready when you are" : "Paused"}</p>
+    <div className="max-w-[1180px] mx-auto">
+      {/* Call bar: who, where we are, and the few controls you need */}
+      <section className="panel relative overflow-hidden px-5 py-4 flex flex-wrap items-center gap-x-5 gap-y-3" aria-label="Call">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="relative grid place-items-center w-10 h-10 rounded-full bg-ink text-paper text-sm font-semibold shrink-0">
+            {deal.candidate.name.split(" ").map((p) => p[0]).join("")}
+            {streaming && scenario.lines[streaming.i].speaker === "candidate" && <span className="ping absolute inset-0 rounded-full border-2 border-fast" />}
+          </span>
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-2">
+              <span className="font-semibold truncate">{deal.candidate.name}</span>
+              <span className="num text-xs text-ink-3">${Math.round(deal.fee / 1000)}k fee</span>
             </div>
-            {/* Voice level: moves only while someone is talking */}
-            <div className={`ml-auto flex items-end gap-0.5 h-5 transition-opacity duration-300 ${streaming ? "opacity-100" : "opacity-0"}`} aria-hidden="true">
-              {[0, 1, 2, 3, 4].map((k) => (
-                <span key={k} className={`eq w-1 rounded-full ${streaming && scenario.lines[streaming.i].speaker === "candidate" ? "bg-ink" : "bg-fast"}`} style={{ animationDelay: `${k * 110}ms` }} />
-              ))}
-            </div>
-            {idx > 0 && !done && (
-              <button onClick={endCall} className="press ml-1 px-3 py-1.5 rounded-full text-xs font-medium bg-risk-soft text-risk hover:bg-risk hover:text-white">
-                End call
-              </button>
-            )}
-          </div>
-
-          <label className="block">
-            <span className="sr-only">Scenario</span>
-            <select value={scenarioId} onChange={(e) => { setScenarioId(e.target.value); reset(); }} className="w-full px-3 py-2 rounded-xl border border-line bg-paper text-sm">
-              {SCENARIOS.map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}
-            </select>
-          </label>
-
-          <div className="flex items-center gap-2 text-sm">
-            <button onClick={() => setPlaying((p) => !p)} disabled={!ready || done} className="press flex items-center justify-center gap-1.5 min-h-10 px-4 rounded-xl bg-ink text-paper disabled:opacity-40 w-[92px]">
-              <Icon name={playing ? "pause" : "play"} size={14} />{playing ? "Pause" : "Play"}
-            </button>
-            <button onClick={next} disabled={!ready || playing || done || !!streaming} className="press flex items-center gap-1.5 min-h-10 px-3 rounded-xl border border-line hover:bg-paper disabled:opacity-40">
-              <Icon name="step" size={14} />Step
-            </button>
-            <button onClick={reset} aria-label="Reset" title="Reset" className="press grid place-items-center w-10 h-10 rounded-xl border border-line hover:bg-paper">
-              <Icon name="reset" size={14} />
-            </button>
-            <div className="ml-auto flex rounded-lg bg-paper p-0.5 text-xs" role="group" aria-label="Playback speed">
-              {[1, 1.5, 2].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} aria-pressed={speed === s} className={`press px-2 py-1 rounded-md ${speed === s ? "bg-card shadow-sm text-ink" : "text-ink-3"}`}>{s}x</button>
-              ))}
-            </div>
-          </div>
-
-          {/* Progress through the call */}
-          <div>
-            <div className="h-1 rounded-full bg-line overflow-hidden">
-              <div className="h-full bg-fast rounded-full transition-[width] duration-300" style={{ width: `${(idx / scenario.lines.length) * 100}%` }} />
-            </div>
-            <div className="mt-1.5 flex items-center justify-between text-xs text-ink-3">
-              <span className="num">Line {idx} of {scenario.lines.length}</span>
-              <span className="flex items-center gap-1.5" title="The local model helps when keywords miss">
-                <span className={`w-1.5 h-1.5 rounded-full ${emb.status === "ready" ? "bg-fast" : emb.status === "error" ? "bg-ink-3" : "bg-slow animate-pulse"}`} />
-                {emb.status === "ready" ? "Local model warm" : emb.status === "error" ? "Keywords only" : "Warming local model"}
-              </span>
-            </div>
+            <label className="flex items-center gap-1 text-xs text-ink-3">
+              <span className="sr-only">Scenario</span>
+              <select value={scenarioId} onChange={(e) => { setScenarioId(e.target.value); reset(); }} className="appearance-none bg-transparent pr-4 hover:text-ink cursor-pointer max-w-[260px] truncate">
+                {SCENARIOS.map((s) => <option key={s.id} value={s.id}>{DEAL_BY_ID[s.dealId].job.title} · {s.title}</option>)}
+              </select>
+              <Icon name="chevron" size={12} className="-ml-4 pointer-events-none" />
+            </label>
           </div>
         </div>
 
-        <ol ref={feed} className="p-4 space-y-3 overflow-y-auto flex-1" aria-live="polite">
-          {scenario.lines.slice(0, idx).map((l, i) => {
-            const fired = cards.find((c) => c.lineIndex === i);
-            const isCand = l.speaker === "candidate";
-            const latest = i === idx - 1;
-            return (
-              <li key={i} className={`rise flex gap-2 transition-opacity duration-500 hover:opacity-100 ${isCand ? "" : "flex-row-reverse"} ${i < idx - 4 ? "opacity-45" : ""}`}>
-                <span className={`mt-5 shrink-0 grid place-items-center w-7 h-7 rounded-full text-[11px] font-semibold ${isCand ? "bg-ink text-paper" : "bg-line text-ink-2"}`}>
-                  {isCand ? firstName[0] : "R"}
-                </span>
-                <div className={`max-w-[85%] flex flex-col ${isCand ? "items-start" : "items-end"}`}>
-                  <span className="text-xs text-ink-3 mb-1 px-1">{isCand ? firstName : "Recruiter"}</span>
-                  <p className={`text-sm leading-relaxed px-3 py-2 rounded-2xl transition-colors ${isCand ? `rounded-tl-md bg-paper text-ink ${latest ? "ring-1 ring-ink/15" : ""}` : "rounded-tr-md bg-fast-soft/60 text-ink-2"}`}>
+        <div className="ml-auto flex items-center gap-2">
+          {/* Voice level, only while someone is talking */}
+          <div className={`flex items-end gap-0.5 h-5 mr-1 transition-opacity duration-300 ${streaming ? "opacity-100" : "opacity-0"}`} aria-hidden="true">
+            {[0, 1, 2, 3, 4].map((k) => (
+              <span key={k} className={`eq w-1 rounded-full ${streaming && scenario.lines[streaming.i].speaker === "candidate" ? "bg-ink" : "bg-fast"}`} style={{ animationDelay: `${k * 110}ms` }} />
+            ))}
+          </div>
+          <button onClick={() => setBriefOpen(true)} className="press flex items-center gap-1.5 min-h-10 px-3.5 rounded-xl border border-line hover:bg-paper text-sm">
+            <Icon name="clipboard" size={14} /> Brief
+            {briefData && <span className="num text-[11px] px-1.5 rounded-full bg-risk-soft text-risk">{briefData.brief.riskSignals.length}</span>}
+          </button>
+          {done ? (
+            <button onClick={reset} className="press flex items-center gap-1.5 min-h-10 px-4 rounded-xl bg-ink text-paper text-sm">
+              <Icon name="reset" size={14} /> Replay
+            </button>
+          ) : (
+            <>
+              <button onClick={next} disabled={!ready || playing || !!streaming} className="press flex items-center gap-1.5 min-h-10 px-3.5 rounded-xl border border-line hover:bg-paper text-sm disabled:opacity-40">
+                <Icon name="step" size={14} /> Step
+              </button>
+              <button onClick={() => setPlaying((p) => !p)} disabled={!ready} className="press flex items-center justify-center gap-1.5 min-h-10 w-[92px] rounded-xl bg-ink text-paper text-sm disabled:opacity-40">
+                <Icon name={playing ? "pause" : "play"} size={14} /> {playing ? "Pause" : "Play"}
+              </button>
+              {idx > 0 && (
+                <button onClick={endCall} className="press rise min-h-10 px-3.5 rounded-xl text-sm font-medium bg-risk-soft text-risk hover:bg-risk hover:text-white">
+                  End call
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Progress through the call, as a hairline */}
+        <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-line/60">
+          <div className="h-full bg-fast transition-[width] duration-500" style={{ width: `${(idx / scenario.lines.length) * 100}%` }} />
+        </div>
+      </section>
+
+      <div className="mt-5 grid grid-cols-1 lg:grid-cols-[minmax(280px,340px)_1fr] gap-6 items-start">
+        {/* Captions */}
+        <section className="lg:sticky lg:top-20" aria-label="Transcript">
+          <ol ref={feed} className="max-h-[calc(100vh-220px)] overflow-y-auto pr-1 space-y-4" aria-live="polite">
+            {scenario.lines.slice(0, idx).map((l, i) => {
+              const isCand = l.speaker === "candidate";
+              return (
+                <li key={i} className={`rise transition-opacity duration-500 hover:opacity-100 ${i < idx - 3 ? "opacity-35" : ""}`}>
+                  <div className={`text-[11px] uppercase tracking-wider mb-1 ${isCand ? "text-ink-2 font-semibold" : "text-ink-3"}`}>{isCand ? firstName : "You"}</div>
+                  <p className={`leading-relaxed ${isCand ? "text-[15px] text-ink" : "text-sm text-ink-3"}`}>
                     {streaming?.i === i ? (
                       <>
                         {l.text.split(" ").slice(0, streaming.words).join(" ")}
@@ -310,65 +303,77 @@ export function CallScreen() {
                       l.text
                     )}
                   </p>
-                  {fired && (
-                    <span className="mt-1 flex items-center gap-1 text-[11px] text-fast px-1">
-                      <Icon name={CATEGORY_ICON[fired.categoryId] ?? "message"} size={11} />
-                      {CATEGORY_BY_ID[fired.categoryId]?.label}
-                    </span>
-                  )}
-                </div>
+                </li>
+              );
+            })}
+            {idx === 0 && (
+              <li className="text-sm text-ink-3 pt-2">
+                {ready ? "The call shows up here as it happens." : "Preparing the brief…"}
+                <span className="block mt-1 text-xs">Space to play · → to step</span>
               </li>
-            );
-          })}
-          {idx === 0 && (
-            <li className="py-10 text-center text-sm text-ink-3">
-              <Icon name="mic" size={22} className="mx-auto mb-2 text-ink-3" />
-              {ready ? "Press Play, or Step through line by line." : "Waiting for the pre-call brief…"}
-              <span className="block mt-1 text-xs">Space to play · → to step</span>
-            </li>
-          )}
-        </ol>
-      </section>
-
-      {/* The suggestion */}
-      <section className="space-y-4 min-w-0" aria-labelledby="sugg-title">
-        <div className="flex items-center gap-2">
-          <Icon name={done && cards.length ? "check" : "sparkles"} size={16} className="text-fast" />
-          <h2 id="sugg-title" className="font-semibold">{done && cards.length ? "After the call" : "Ask next"}</h2>
-        </div>
-        {done && cards.length > 0 ? (
-          <Recap cards={cards} nextSteps={briefData?.brief.nextSteps ?? []} name={firstName} />
-        ) : current ? (
-          <SuggestionCard key={current.id} s={current} ladderSize={ladderSize} upNext={upNext} onAct={(a) => act(current, a)} onPeek={setPeek} />
-        ) : (
-          <div className="panel border-dashed p-10 text-center">
-            {streaming || playing ? (
-              <div className="mx-auto mb-3 flex items-end justify-center gap-1 h-8" aria-hidden="true">
-                {[0, 1, 2, 3, 4].map((k) => <span key={k} className="eq w-1.5 rounded-full bg-fast" style={{ animationDelay: `${k * 110}ms` }} />)}
-              </div>
-            ) : (
-              <span className="mx-auto mb-3 grid place-items-center w-11 h-11 rounded-full bg-fast-soft text-fast"><Icon name="ear" size={20} /></span>
             )}
-            <p className="font-medium">{streaming || playing ? "Listening" : "Quiet until it matters"}</p>
-            <p className="mt-1 text-sm text-ink-3">Most of a call isn&apos;t pushback, so nothing shows until there&apos;s something worth asking.</p>
-          </div>
-        )}
-        {(done ? cards.length > 0 : history.length > 0) && (
-          <Disclosure title={done ? "Questions from this call" : "Earlier on this call"} icon="clock" meta={<span className="num">{done ? cards.length : history.length}</span>} className="pt-1">
-            <div className="space-y-2 pt-2">
-              {(done ? [...cards].reverse() : history).map((c) => <SuggestionRow key={c.id} s={c} />)}
-            </div>
-          </Disclosure>
-        )}
-      </section>
+          </ol>
+        </section>
 
-      {/* Brief + learning loop */}
-      <aside className={`space-y-4 transition-opacity duration-500 ${playing ? "opacity-50 hover:opacity-100" : ""}`}>
+        {/* The one thing to look at */}
+        <section className="space-y-4 min-w-0" aria-label="Ask next">
+          {done && cards.length > 0 ? (
+            <Recap cards={cards} nextSteps={briefData?.brief.nextSteps ?? []} name={firstName} />
+          ) : current ? (
+            <SuggestionCard key={current.id} s={current} ladderSize={ladderSize} upNext={upNext} onAct={(a) => act(current, a)} onPeek={setPeek} />
+          ) : (
+            <div className="rounded-2xl border border-dashed border-line px-8 py-16 text-center">
+              <div className={`mx-auto mb-4 flex items-end justify-center gap-1 h-8 transition-opacity ${streaming || playing ? "opacity-100" : "opacity-30"}`} aria-hidden="true">
+                {[0, 1, 2, 3, 4].map((k) => <span key={k} className={`${streaming || playing ? "eq" : "h-2"} w-1.5 rounded-full bg-fast`} style={{ animationDelay: `${k * 110}ms` }} />)}
+              </div>
+              <p className="font-medium">{streaming || playing ? "Listening" : "Quiet until it matters"}</p>
+              <p className="mt-1 text-sm text-ink-3">A question shows up only when there&apos;s one worth asking.</p>
+            </div>
+          )}
+          {(done ? cards.length > 0 : history.length > 0) && (
+            <Disclosure title={done ? "Questions from this call" : "Earlier"} icon="clock" meta={<span className="num">{done ? cards.length : history.length}</span>}>
+              <div className="space-y-2 pt-2">
+                {(done ? [...cards].reverse() : history).map((c) => <SuggestionRow key={c.id} s={c} />)}
+              </div>
+            </Disclosure>
+          )}
+        </section>
+      </div>
+
+      {/* Brief and learning loop live in a drawer: there when you want them, gone when you don't */}
+      <Drawer open={briefOpen} onClose={() => setBriefOpen(false)} title="Pre-call brief">
         <BriefPanel deal={deal} data={briefData} loading={briefLoading} onRegenerate={() => loadBrief(true)} live={session.mode === "live"} progress={progress} />
         <LearningLoop log={log} onClear={() => setLog([])} />
-      </aside>
+        <p className="flex items-center gap-1.5 text-xs text-ink-3 px-1">
+          <span className={`w-1.5 h-1.5 rounded-full ${emb.status === "ready" ? "bg-fast" : emb.status === "error" ? "bg-ink-3" : "bg-slow animate-pulse"}`} />
+          {emb.status === "ready" ? "Local model warm" : emb.status === "error" ? "Matching on keywords only" : "Warming local model"}
+        </p>
+      </Drawer>
 
       {peek && <PlaybookPeek file={peek} onClose={() => setPeek(null)} />}
+    </div>
+  );
+}
+
+// Slide-over panel from the right.
+function Drawer({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+  return (
+    <div className={`fixed inset-0 z-30 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
+      <div onClick={onClose} className={`absolute inset-0 bg-ink/20 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`} />
+      <aside role="dialog" aria-modal="true" aria-label={title} className={`absolute right-0 top-0 h-full w-full max-w-[420px] bg-paper border-l border-line overflow-y-auto p-4 space-y-4 transition-[transform,box-shadow] duration-300 ease-out ${open ? "translate-x-0 shadow-2xl" : "translate-x-full shadow-none"}`}>
+        <div className="flex justify-end">
+          <button onClick={onClose} className="press flex items-center gap-1 text-sm text-ink-2 px-2 py-1 rounded-lg hover:bg-line/60">
+            <Icon name="x" size={14} /> close
+          </button>
+        </div>
+        {children}
+      </aside>
     </div>
   );
 }

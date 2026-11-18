@@ -49,7 +49,6 @@ export function SuggestionCard({ s, ladderSize, upNext, onAct, onPeek }: { s: Ca
               <span key={i} className={`w-1.5 h-1.5 rounded-full ${i <= s.rung ? "bg-fast" : "bg-line"}`} />
             ))}
           </span>
-          Follow-up {s.rung + 1}
         </span>
         <span
           className="ml-auto flex items-center gap-1 num text-ink-3 px-2 py-0.5 rounded-full bg-paper cursor-help"
@@ -96,38 +95,25 @@ export function SuggestionCard({ s, ladderSize, upNext, onAct, onPeek }: { s: Ca
             <div className="text-ink">{s.refined.question}</div>
           </div>
         )}
-        {s.refined && !s.refined.question && (
-          <span className="rise flex items-center gap-2 text-ink-3">
-            <Icon name="check" size={14} className="text-fast" /> Haiku kept it (<span className="num">{ms(s.refined.latencyMs)}</span>): {s.refined.reason}
-          </span>
-        )}
       </div>
 
-      {/* Why this question: the two rows that matter, the rest on demand */}
+      {/* Why this question: one line, details on demand */}
       <section className="mt-5 pt-4 border-t border-line">
-        <div className="flex items-center mb-3">
-          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm">
+          <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2">
             <Icon name="bulb" size={13} /> Why this question
-          </h3>
+          </span>
+          <span className="text-ink-3">heard</span>
+          {s.matchedSignals.map((x) => (
+            <span key={x} className="px-2 py-0.5 rounded-md bg-paper border border-line text-xs">{x}</span>
+          ))}
+          <span className="text-ink-3">from</span>
+          <button onClick={() => onPeek(source)} className="press num text-xs px-2 py-0.5 rounded-md border border-line bg-paper hover:border-ink/30">{source}</button>
           <button onClick={() => setMore((m) => !m)} aria-expanded={more} className="press ml-auto flex items-center gap-1 text-xs text-ink-3 hover:text-ink px-2 py-1 rounded-lg hover:bg-paper">
             {more ? "Less" : "More"}
             <Icon name="chevron" size={13} className={`transition-transform duration-300 ${more ? "rotate-180" : ""}`} />
           </button>
         </div>
-        <dl className="grid grid-cols-[150px_1fr] gap-x-3 gap-y-2.5 text-sm">
-          <Row icon="ear" label="Heard">
-            <div className="flex flex-wrap gap-1.5">
-              {s.matchedSignals.map((x) => (
-                <span key={x} className="px-2 py-0.5 rounded-md bg-paper border border-line">{x}</span>
-              ))}
-            </div>
-          </Row>
-          <Row icon="file" label="Source">
-            <button onClick={() => onPeek(source)} className="press num text-xs px-2 py-0.5 rounded-md border border-line bg-paper hover:border-ink/30">
-              {source}
-            </button>
-          </Row>
-        </dl>
         <Collapse open={more}>
           <dl className="grid grid-cols-[150px_1fr] gap-x-3 gap-y-2.5 text-sm pt-2.5">
             <Row icon="target" label="Why for this deal">
@@ -168,7 +154,7 @@ export function SuggestionCard({ s, ladderSize, upNext, onAct, onPeek }: { s: Ca
         </div>
       )}
 
-      <div className="mt-5 flex items-center gap-2 min-h-10">
+      <div className="mt-4 flex items-center gap-1 min-h-10">
         {s.autoAsked ? (
           <span className="rise flex items-center gap-2 px-3.5 min-h-10 rounded-xl bg-fast-soft text-fast text-sm font-medium">
             <Icon name="check" size={15} /> You asked it
@@ -176,13 +162,9 @@ export function SuggestionCard({ s, ladderSize, upNext, onAct, onPeek }: { s: Ca
           </span>
         ) : (
           <>
+            <span className="text-xs text-ink-3 mr-auto">{s.acted ? "Logged to the learning loop" : "Just ask it. The caddy notices."}</span>
             <ActButton active={s.acted === "used"} disabled={!!s.acted} onClick={() => onAct("used")} icon="thumbsUp" label="Used it" />
-            <ActButton active={s.acted === "ignored"} disabled={!!s.acted} onClick={() => onAct("ignored")} icon="x" label="Ignored" />
-            {s.acted ? (
-              <span className="rise text-xs text-ink-3 ml-1">Logged to the learning loop</span>
-            ) : (
-              <span className="text-xs text-ink-3 ml-1 hidden md:inline">Or just ask it. The caddy notices.</span>
-            )}
+            <ActButton active={s.acted === "ignored"} disabled={!!s.acted} onClick={() => onAct("ignored")} icon="x" label="Skip" />
           </>
         )}
       </div>
@@ -206,7 +188,7 @@ function ActButton({ active, disabled, onClick, icon, label }: { active: boolean
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`press flex items-center gap-1.5 px-4 min-h-10 rounded-xl text-sm border ${active ? "bg-ink text-paper border-ink" : "border-line hover:bg-paper"} disabled:cursor-default ${disabled && !active ? "opacity-50" : ""}`}
+      className={`press flex items-center gap-1.5 px-3 min-h-9 rounded-lg text-xs ${active ? "bg-ink text-paper" : "text-ink-2 hover:bg-paper"} disabled:cursor-default ${disabled && !active ? "opacity-50" : ""}`}
     >
       <Icon name={active ? "check" : icon} size={15} />
       {label}
