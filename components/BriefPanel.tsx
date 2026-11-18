@@ -56,6 +56,17 @@ export function BriefPanel({ deal, data, loading, onRegenerate, live, progress }
 
       {data && (
         <div className="mt-4 space-y-5">
+          {/* How much of the corpus went into this one brief */}
+          {data.brief.drewOn && (
+            <div className="flex items-center gap-2 text-xs text-ink-2">
+              <Icon name="layers" size={13} className="text-fast" />
+              <span>
+                Built from <span className="num font-semibold text-ink">{data.brief.drewOn.deals.toLocaleString()}</span> similar past deals and{" "}
+                <span className="num font-semibold text-ink">{data.brief.drewOn.files}</span> playbook files
+              </span>
+            </div>
+          )}
+
           {/* Summary: two lines, expand on demand */}
           <div>
             <p className={`text-ink-2 leading-relaxed ${full ? "" : "line-clamp-2"}`}>{data.brief.summary}</p>

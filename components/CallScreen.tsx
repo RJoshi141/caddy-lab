@@ -10,6 +10,7 @@ import { topKPlaybook } from "@/lib/retrieval";
 import { useEmbeddings } from "@/lib/useEmbeddings";
 import { appendLog, readLog, type LogEntry } from "@/lib/log";
 import { FASTPATH } from "@/lib/config";
+import { ASKED_THRESHOLD, askedSimilarity } from "@/lib/match";
 import { SuggestionCard, SuggestionRow } from "./SuggestionCard";
 import { CATEGORY_ICON, Icon } from "./Icon";
 import { Disclosure } from "./ui";
@@ -17,7 +18,7 @@ import { CATEGORY_BY_ID } from "@/data/categories";
 import { BriefPanel } from "./BriefPanel";
 import { LearningLoop } from "./LearningLoop";
 
-type Card = Suggestion & { files?: string[]; pending?: boolean; acted?: "used" | "ignored"; shownAt: number };
+type Card = Suggestion & { files?: string[]; pending?: boolean; acted?: "used" | "ignored"; autoAsked?: boolean; shownAt: number };
 const DOCS = playbook as { file: string; title: string; text: string }[];
 
 export function CallScreen() {
@@ -36,6 +37,10 @@ export function CallScreen() {
   const [peek, setPeek] = useState<string | null>(null);
   const [log, setLog] = useState<LogEntry[]>([]);
   const engine = useRef<EngineState>(initialEngine());
+  const cardsRef = useRef<Card[]>([]);
+  useEffect(() => {
+    cardsRef.current = cards;
+  }, [cards]);
   const busy = useRef(false);
   const feed = useRef<HTMLOListElement>(null);
   // Keep the newest line in view, like a live caption feed.
@@ -98,7 +103,7 @@ export function CallScreen() {
           const replace = rf.verdict === "replace" && !!rf.question;
           // Swap only if fresh, untouched, and still the card on top. Otherwise chip.
           const swapped = replace && !c.acted && latest?.id === c.id && Date.now() - c.shownAt < FASTPATH.swapWindowMs;
-          return { ...c, pending: false, refined: { question: replace ? rf.question : "", reason: rf.reason, swapped, latencyMs: r.ms, playbookRef: rf.playbookRef } };
+          return { ...c, pending: false, refined: { question: replace ? rf.question : "", reason: rf.reason, swapped, latencyMs: r.ms, playbookRef: rf.playbookRef, evidence: rf.evidence } };
         });
       });
     },
@@ -109,6 +114,12 @@ export function CallScreen() {
   const playLine = useCallback(
     async (i: number) => {
       const line = scenario.lines[i];
+      // The recruiter just spoke: did they ask the question on screen? If so, log it. No clicks needed.
+      if (line.speaker === "recruiter") {
+        const top = cardsRef.current[cardsRef.current.length - 1];
+        const shown = top?.refined?.swapped ? top.refined.question : top?.question;
+        if (top && shown && !top.acted && askedSimilarity(line.text, shown) >= ASKED_THRESHOLD) act(top, "used", true);
+      }
       const t0 = performance.now();
       let c: Classification = line.speaker === "candidate" ? keywordClassify(line.text) : { categoryId: null, confidence: 0, signals: [], method: "none" };
       let queryVec: number[] | undefined;
@@ -127,6 +138,8 @@ export function CallScreen() {
         refine(card, queryVec);
       }
     },
+    // act only uses setters and the deal id, which is stable within a scenario.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [scenario, emb, briefData, refine]
   );
 
@@ -147,11 +160,11 @@ export function CallScreen() {
     return () => clearTimeout(t);
   }, [playing, idx, speed, scenario.lines, next]);
 
-  const act = (card: Card, action: "used" | "ignored") => {
-    setCards((cs) => cs.map((c) => (c.id === card.id ? { ...c, acted: action } : c)));
+  function act(card: Card, action: "used" | "ignored", auto = false) {
+    setCards((cs) => cs.map((c) => (c.id === card.id ? { ...c, acted: action, autoAsked: auto } : c)));
     appendLog({ at: Date.now(), dealId: deal.id, categoryId: card.categoryId, rung: card.rung, source: card.source, action, question: card.refined?.swapped ? card.refined.question : card.question, refined: !!card.refined?.swapped });
     setLog(readLog());
-  };
+  }
 
   const current = cards[cards.length - 1];
   const history = cards.slice(0, -1).reverse();

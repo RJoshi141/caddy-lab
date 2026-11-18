@@ -8,24 +8,28 @@ export const MOCK_REFINEMENTS: Record<string, Refinement> = {
     question: "Is 190 what your friend at Stripe makes in base, or in total? Bigger companies often pad the number with RSUs.",
     reason: "She just named the peer anchor explicitly",
     playbookRef: "base-vs-total-comp.md",
+    evidence: { deals: 89, rate: 0.76, baseline: 0.46, example: "The friend's number was total comp with RSUs. Same base, offer accepted." },
   },
   "nadia-ledgerline:comp_gap:2": {
     verdict: "replace",
     question: "You haven't seen their number yet. If it came in at 185 too, which job would you actually pick?",
     reason: "She's guessing the other offer is higher",
     playbookRef: "offer-comparison.md",
+    evidence: { deals: 143, rate: 0.63, baseline: 0.41, example: "Asked to compare at equal numbers, chose the smaller company." },
   },
   "nadia-ledgerline:comp_gap:3": {
     verdict: "replace",
     question: "If equity counts as zero for you, would 185 base plus a six month comp review get you there?",
     reason: "She dismissed equity, so drop it from the pitch",
     playbookRef: "equity-skepticism.md",
+    evidence: { deals: 77, rate: 0.6, baseline: 0.43, example: "Equity sceptic accepted with a six month comp review in writing." },
   },
   "nadia-ledgerline:comp_gap:4": {
     verdict: "replace",
     question: "Say Ledgerline tops out at 185 and the bank counters at 190. What would make you walk anyway?",
     reason: "Generic rung, she just tied comp to the counter",
     playbookRef: "counteroffer-risk.md",
+    evidence: { deals: 64, rate: 0.7, baseline: 0.39, example: "Named a walk-away reason before the counter landed, resigned anyway." },
   },
   "nadia-ledgerline:counteroffer:0": {
     verdict: "keep",
@@ -37,11 +41,13 @@ export const MOCK_REFINEMENTS: Record<string, Refinement> = {
     question: "Sounds like the product is the one hook. If you led the booking app's roadmap with no reports, is that interesting or still a no?",
     reason: "He just said the product is interesting",
     playbookRef: "career-direction.md",
+    evidence: { deals: 58, rate: 0.55, baseline: 0.3, example: "Roadmap ownership without reports kept a lukewarm PM in process." },
   },
   "marcus-cobalt:title_level:0": {
     verdict: "replace",
     question: "Is it the title, or is it that no reports for a year means another year before you can lead people?",
     reason: "He paired title with the path to managing",
     playbookRef: "title-concerns.md",
+    evidence: { deals: 71, rate: 0.57, baseline: 0.33, example: "Path to managing in writing mattered more than the title." },
   },
 };

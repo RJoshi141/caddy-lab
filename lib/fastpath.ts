@@ -2,7 +2,7 @@
 // embedding classifier second (when the in-browser model is warm).
 import { CATEGORIES, CATEGORY_BY_ID } from "@/data/categories";
 import playbook from "@/data/playbook-index.json";
-import type { Brief, Rung } from "@/lib/schemas";
+import type { Brief, Evidence, Rung } from "@/lib/schemas";
 import { FASTPATH } from "@/lib/config";
 
 export type Classification = {
@@ -38,10 +38,11 @@ export type Suggestion = {
   playbookRef: string;
   rung: number; // 0-based rung on the ladder
   source: "brief" | "playbook"; // brief = deal specific, playbook = generic fallback
+  evidence?: Evidence;
   method: Classification["method"];
   confidence: number;
   latencyMs: number;
-  refined?: { question: string; reason: string; swapped: boolean; latencyMs: number; playbookRef?: string };
+  refined?: { question: string; reason: string; swapped: boolean; latencyMs: number; playbookRef?: string; evidence?: Evidence };
 };
 
 const PLAYBOOK = playbook as { file: string; title: string; category: string; ladder: string[] }[];

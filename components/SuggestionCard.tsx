@@ -5,7 +5,7 @@ import { useState } from "react";
 import { CATEGORY_ICON, Icon, type IconName } from "./Icon";
 import { Collapse } from "./ui";
 
-export type CardData = Suggestion & { files?: string[]; pending?: boolean; acted?: "used" | "ignored" };
+export type CardData = Suggestion & { files?: string[]; pending?: boolean; acted?: "used" | "ignored"; autoAsked?: boolean };
 
 const ms = (x: number) => (x < 0.01 ? "<0.01 ms" : x < 1 ? `${x.toFixed(2)} ms` : `${Math.round(x)} ms`);
 
@@ -16,6 +16,7 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
   const cat = CATEGORY_BY_ID[s.categoryId];
   const source = swapped && s.refined?.playbookRef ? s.refined.playbookRef : s.playbookRef;
   const dots = Math.max(ladderSize, s.rung + 1);
+  const ev = (swapped && s.refined?.evidence) || s.evidence;
   const [more, setMore] = useState(false);
 
   return (
@@ -44,6 +45,17 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
       </div>
 
       <p key={question} className={`display mt-4 text-[26px] leading-[1.25] font-medium ${swapped ? "flash rounded-md -mx-1 px-1" : ""}`}>{question}</p>
+
+      {/* What happened in similar past deals: the corpus, in one line */}
+      {ev && (
+        <p key={`ev-${question}`} className="rise mt-3 flex items-center gap-2 text-sm text-ink-2" title="Mock outcome data. In production this comes from the overnight pass over past deals.">
+          <Icon name="trend" size={14} className="text-fast" />
+          <span>
+            <span className="font-semibold text-fast num">{Math.round(ev.rate * 100)}%</span> accepted when asked, vs <span className="num">{Math.round(ev.baseline * 100)}%</span> when not
+            <span className="text-ink-3"> · {ev.deals} similar deals</span>
+          </span>
+        </p>
+      )}
 
       {/* Background refinement status */}
       <div className="mt-3 min-h-6 text-sm">
@@ -109,6 +121,11 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
                 {s.source === "brief" ? "Written for this deal in the brief" : "Generic playbook question"}
               </span>
             </Row>
+            {ev && (
+              <Row icon="users" label="A deal like this">
+                <span className="text-ink-2">{ev.example}</span>
+              </Row>
+            )}
             <Row icon="clipboard" label="Brief predicted">
               <span className="text-ink-2">{s.briefSignals.length ? s.briefSignals.join(", ") : "Nothing for this follow-up"}</span>
             </Row>
@@ -125,10 +142,23 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
         </Collapse>
       </section>
 
-      <div className="mt-5 flex gap-2">
-        <ActButton active={s.acted === "used"} disabled={!!s.acted} onClick={() => onAct("used")} icon="thumbsUp" label="Used it" />
-        <ActButton active={s.acted === "ignored"} disabled={!!s.acted} onClick={() => onAct("ignored")} icon="x" label="Ignored" />
-        {s.acted && <span className="rise self-center text-xs text-ink-3 ml-1">Logged to the learning loop</span>}
+      <div className="mt-5 flex items-center gap-2 min-h-10">
+        {s.autoAsked ? (
+          <span className="rise flex items-center gap-2 px-3.5 min-h-10 rounded-xl bg-fast-soft text-fast text-sm font-medium">
+            <Icon name="check" size={15} /> You asked it
+            <span className="font-normal text-fast/80">· logged automatically</span>
+          </span>
+        ) : (
+          <>
+            <ActButton active={s.acted === "used"} disabled={!!s.acted} onClick={() => onAct("used")} icon="thumbsUp" label="Used it" />
+            <ActButton active={s.acted === "ignored"} disabled={!!s.acted} onClick={() => onAct("ignored")} icon="x" label="Ignored" />
+            {s.acted ? (
+              <span className="rise text-xs text-ink-3 ml-1">Logged to the learning loop</span>
+            ) : (
+              <span className="text-xs text-ink-3 ml-1 hidden md:inline">Or just ask it. The caddy notices.</span>
+            )}
+          </>
+        )}
       </div>
     </article>
   );
@@ -175,7 +205,7 @@ export function SuggestionRow({ s }: { s: CardData }) {
           {swapped && <span className="flex items-center gap-1 text-slow"><Icon name="refresh" size={11} /> refined</span>}
           {s.refined && !swapped && s.refined.question && <span className="flex items-center gap-1 text-slow"><Icon name="sparkles" size={11} /> late option</span>}
           {s.refined && !s.refined.question && <span className="flex items-center gap-1"><Icon name="check" size={11} /> kept</span>}
-          {s.acted && <span className="flex items-center gap-1"><Icon name={s.acted === "used" ? "thumbsUp" : "x"} size={11} /> {s.acted}</span>}
+          {s.acted && <span className={`flex items-center gap-1 ${s.autoAsked ? "text-fast" : ""}`}><Icon name={s.autoAsked ? "check" : s.acted === "used" ? "thumbsUp" : "x"} size={11} /> {s.autoAsked ? "asked" : s.acted}</span>}
         </div>
       </div>
     </div>

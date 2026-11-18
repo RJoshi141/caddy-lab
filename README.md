@@ -6,6 +6,17 @@ The idea is to do the expensive thinking before and after the call, so the live 
 
 > Prototype exploring live call coaching. Mock data. The playbook in `/playbook` is invented and stands in for a real best-practice corpus.
 
+## The answer in one line
+
+Spend tokens on the corpus once, not on every line of every call.
+
+1. **Once, overnight.** Batch-read every deal and every playbook doc. Haiku pulls the moments out of each deal (the pushback, the question asked, what happened next); Sonnet turns each doc into situations and question ladders. At about 60,000 deals and 3,000 docs that's roughly $32 with the Batch API (see `corpusPassCost` in `lib/cost.ts`).
+2. **Before each call.** Sonnet picks the slice of that corpus that matches this deal and writes its follow-up questions, each with what happened in similar past deals.
+3. **During the call.** Local matching, no model. Haiku only sharpens a question when the candidate pushes back.
+4. **After the call.** What recruiters actually ask (detected from the transcript, no clicks) and how deals end feed back into what gets prepared next time.
+
+The unique part is joining the two halves of the corpus: the playbook says what good recruiters ask, the deal history says what actually worked.
+
 ## How it works
 
 ```mermaid
@@ -95,6 +106,7 @@ docs/           Talking points for the next call
 - **The data is mock.** 34 invented playbook files and two deals, versus a real corpus of thousands of docs and 60k deals. Retrieval quality at that size is a different problem.
 - **No real speech-to-text.** Lines arrive clean and complete. Real STT gives partial, wrong and overlapping text, and its own latency is likely most of a 0.4 second budget.
 - **The keyword prefilter is hand-tuned to these scripts.** It shows the shape of a zero-cost classifier, not its accuracy. A real one would be trained on labeled call lines from the corpus.
+- **The outcome numbers are invented.** "71% accepted when asked" and "built from 1,284 similar deals" show where real deal-history stats would appear. They aren't computed from anything.
 - **Mock refinements are canned.** They show the swap behavior, not Haiku's judgement. Live mode exercises the real thing.
 - **Embedding classifier is untested at scale here.** The build sandbox couldn't download the model, so keywords carried the demo; the model loads in a normal browser.
 - **Cost numbers are per call hour under stated assumptions.** Utterance rate, pushback share and call length are guesses you can edit on `/cost`.

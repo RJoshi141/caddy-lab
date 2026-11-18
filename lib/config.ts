@@ -56,3 +56,15 @@ export const CALL_DEFAULTS = {
   refineOutputTokens: 90,
   callMinutes: 30,
 };
+
+// The corpus, as described on the first call. Used to price the one-time
+// offline pass that turns it into situation -> question -> outcome cards.
+export const CORPUS = {
+  deals: 60000,
+  tokensPerDeal: 3000, // notes, emails, call summaries, outcome
+  outPerDeal: 300, // extracted moments: pushback, question asked, what happened
+  docs: 3000, // "several thousand" playbook docs
+  tokensPerDoc: 2000,
+  outPerDoc: 800, // situations + question ladders per doc
+  batchDiscount: 0.5, // Batch API is half price, fine for an overnight job
+};

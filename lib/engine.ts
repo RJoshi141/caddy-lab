@@ -44,6 +44,7 @@ export function step(
       playbookRef: r.playbookRef,
       rung,
       source: r.source,
+      evidence: r.evidence,
       method: c.method,
       confidence: c.confidence,
       latencyMs,

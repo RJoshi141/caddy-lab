@@ -3,8 +3,8 @@
 // and the working tucked away until someone asks.
 import { useEffect, useState } from "react";
 import { useSession } from "@/app/session";
-import { CALL_DEFAULTS, MODELS, NAIVE_OPTIONS, type ModelId } from "@/lib/config";
-import { caddyPerHour, fmt$, naivePerHour, usageCost, type Assumptions, type TokenSizes } from "@/lib/cost";
+import { CALL_DEFAULTS, CORPUS, MODELS, NAIVE_OPTIONS, type ModelId } from "@/lib/config";
+import { caddyPerHour, corpusPassCost, fmt$, naivePerHour, usageCost, type Assumptions, type TokenSizes } from "@/lib/cost";
 import { MOCK_BRIEFS } from "@/data/mock/briefs";
 import { SCENARIOS } from "@/data/transcripts";
 import { Icon, type IconName } from "@/components/Icon";
@@ -34,6 +34,7 @@ export default function CostPage() {
   const ratio = naive && caddy ? naive.total / caddy.total : 0;
   const ratioShown = useTween(ratio);
   const hoursPerMonth = scale.recruiters * scale.hoursPerDay * scale.days;
+  const corpus = corpusPassCost();
 
   if (!sizes || !naive || !caddy) {
     return (
@@ -53,8 +54,36 @@ export default function CostPage() {
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
         <h1 className="display text-3xl font-semibold">What one call hour costs</h1>
-        <p className="text-ink-2 mt-1">Same playbook, same deal, same call. Two ways to coach it.</p>
+        <p className="text-ink-2 mt-1">Spend tokens on the corpus once, not on every line of every call.</p>
       </div>
+
+      {/* The architecture, as a cost story: spend on the corpus once, not on every call */}
+      <section className="panel p-5" aria-labelledby="where-title">
+        <h2 id="where-title" className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-4">
+          <Icon name="layers" size={13} /> Where the thinking happens
+        </h2>
+        <ol className="grid gap-3 md:grid-cols-4">
+          {[
+            { when: "Once, overnight", icon: "layers" as IconName, what: `Read all ${CORPUS.deals.toLocaleString()} deals and ${CORPUS.docs.toLocaleString()} docs. Turn them into situations, questions and what actually worked.`, model: "Haiku + Sonnet, batch", cost: `~$${Math.round(corpus.total)}, once` },
+            { when: "Before each call", icon: "clipboard" as IconName, what: "Pick the slice of the corpus that matches this deal. Write its follow-up questions.", model: "Sonnet, once", cost: `${fmt$(caddy.brief / (60 / a.callMinutes))} a call` },
+            { when: "During the call", icon: "zap" as IconName, what: "Match what the candidate says to a prepared question. Sharpen it only when it helps.", model: "Local, then Haiku", cost: `${fmt$(caddy.refine)} an hour` },
+            { when: "After the call", icon: "trend" as IconName, what: "What recruiters ask, and how deals end, updates what gets prepared next time.", model: "No model", cost: "$0" },
+          ].map((st, i) => (
+            <li key={st.when} className="relative rounded-xl bg-paper p-4 flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <span className="grid place-items-center w-7 h-7 rounded-lg bg-card text-fast"><Icon name={st.icon} size={14} /></span>
+                <span className="text-sm font-semibold">{st.when}</span>
+              </div>
+              <p className="text-sm text-ink-2 leading-snug flex-1">{st.what}</p>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-ink-3">{st.model}</span>
+                <span className="num font-semibold text-fast">{st.cost}</span>
+              </div>
+              {i < 3 && <span aria-hidden="true" className="hidden md:block absolute -right-2.5 top-1/2 -translate-y-1/2 z-[1] text-ink-3">›</span>}
+            </li>
+          ))}
+        </ol>
+      </section>
 
       {/* The two numbers */}
       <div className="grid md:grid-cols-2 gap-4">

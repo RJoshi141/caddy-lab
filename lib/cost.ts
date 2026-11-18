@@ -1,7 +1,7 @@
 // Cost math. Every input is either a real usage object from the API or a
 // token count, plus the prices in config. Assumptions are passed in so the
 // /cost page can let you edit them live.
-import { PRICING, type ModelId } from "@/lib/config";
+import { CORPUS, PRICING, type ModelId } from "@/lib/config";
 import type { Usage } from "@/lib/schemas";
 
 const M = 1_000_000;
@@ -66,3 +66,12 @@ export function caddyPerHour(t: TokenSizes, a: Assumptions, briefUsage: Usage, m
 
 export const fmt$ = (x: number) => x >= 1000 ? `$${Math.round(x).toLocaleString("en-US")}` : (x < 0.01 ? `$${x.toFixed(4)}` : x < 1 ? `$${x.toFixed(3)}` : `$${x.toFixed(2)}`);
 export const estTokens = (s: string) => Math.ceil(s.length / 4); // mock-mode estimate only
+
+// One pass over the whole corpus with the Batch API: Haiku extracts moments
+// from every deal, Sonnet distills every doc into situations and ladders.
+export function corpusPassCost() {
+  const h = PRICING["claude-haiku-5-5"], so = PRICING["claude-sonnet-5-5"], d = CORPUS.batchDiscount;
+  const deals = (CORPUS.deals * (CORPUS.tokensPerDeal * h.input + CORPUS.outPerDeal * h.output) * d) / M;
+  const docs = (CORPUS.docs * (CORPUS.tokensPerDoc * so.input + CORPUS.outPerDoc * so.output) * d) / M;
+  return { deals, docs, total: deals + docs };
+}
