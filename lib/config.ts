@@ -68,3 +68,15 @@ export const CORPUS = {
   outPerDoc: 800, // situations + question ladders per doc
   batchDiscount: 0.5, // Batch API is half price, fine for an overnight job
 };
+
+// Where every number on the Cost tab comes from. Shown on the page so the
+// math can be checked, not taken on trust.
+export const PRICING_URL = "https://platform.claude.com/docs/en/about-claude/pricing";
+export const SOURCES = [
+  { id: 1, title: "Model prices", detail: "Sonnet 5.5: $2 in, $10 out. Haiku 5.5: $0.10 in, $0.50 out, per million tokens (prompts under 100k).", from: "Anthropic pricing page, checked Nov 17, 2026", url: PRICING_URL },
+  { id: 2, title: "Prompt caching", detail: "Cache reads: $0.10 on Sonnet (5% of input), $0.01 on Haiku. Five-minute cache writes cost 1.25x input.", from: "Anthropic pricing page", url: PRICING_URL },
+  { id: 3, title: "Batch API", detail: "Half price for overnight jobs: Haiku $0.05 in, $0.25 out. Sonnet $1 in, $5 out.", from: "Anthropic pricing page", url: PRICING_URL },
+  { id: 4, title: "Token sizes", detail: "Mock mode estimates 4 characters per token. Live mode counts every prompt with Anthropic's free token counting endpoint.", from: "Anthropic token counting docs", url: "https://platform.claude.com/docs/en/build-with-claude/token-counting" },
+  { id: 5, title: "Corpus size", detail: "About 60,000 deals and several thousand playbook docs (3,000 assumed here).", from: "My first call with Seb" },
+  { id: 6, title: "Call shape", detail: "240 lines an hour, 30 minute calls, 1 in 4 lines is pushback. Each Haiku call reads an 8k cached prefix.", from: "My estimates, editable under Details" },
+] as const;

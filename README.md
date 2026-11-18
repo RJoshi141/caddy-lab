@@ -54,7 +54,7 @@ flowchart LR
 
 ## Cost math
 
-Prices (USD per million tokens, from the Anthropic pricing page, November 2026), all in `lib/config.ts`:
+Prices (USD per million tokens, from the [Anthropic pricing page](https://platform.claude.com/docs/en/about-claude/pricing), checked November 17, 2026), all in `lib/config.ts`:
 
 | Model | Input | Output | Cache write (5 min) | Cache read |
 |---|---|---|---|---|

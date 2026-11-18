@@ -3,7 +3,7 @@
 // costs each way, and what that means at scale. Everything else is in Details.
 import { useEffect, useState } from "react";
 import { useSession } from "@/app/session";
-import { CALL_DEFAULTS, CORPUS, MODELS, NAIVE_OPTIONS, type ModelId } from "@/lib/config";
+import { CALL_DEFAULTS, CORPUS, MODELS, NAIVE_OPTIONS, SOURCES, type ModelId } from "@/lib/config";
 import { caddyPerHour, corpusPassCost, fmt$, naivePerHour, usageCost, type Assumptions, type TokenSizes } from "@/lib/cost";
 import { MOCK_BRIEFS } from "@/data/mock/briefs";
 import { SCENARIOS } from "@/data/transcripts";
@@ -46,11 +46,11 @@ export default function CostPage() {
 
   const modelName = (m: string) => (m.includes("opus") ? "Opus" : "Sonnet");
   const live = session.spend.filter((s) => !s.mock);
-  const steps: { when: string; icon: IconName; what: string; cost: string }[] = [
-    { when: "Once, overnight", icon: "layers", what: `Read all ${CORPUS.deals.toLocaleString()} deals and ${CORPUS.docs.toLocaleString()} docs`, cost: `~$${Math.round(corpus.total)} once` },
-    { when: "Before each call", icon: "clipboard", what: "Write this deal's brief", cost: `${fmt$(caddy.brief / (60 / a.callMinutes))} a call` },
-    { when: "During the call", icon: "zap", what: "Look up, sharpen only on pushback", cost: `${fmt$(caddy.refine)} an hour` },
-    { when: "After the call", icon: "trend", what: "Outcomes feed back in", cost: "$0" },
+  const steps: { when: string; icon: IconName; what: string; cost: string; refs: number[] }[] = [
+    { when: "Once, overnight", icon: "layers", what: `Read all ${CORPUS.deals.toLocaleString()} deals and ${CORPUS.docs.toLocaleString()} docs`, cost: `~$${Math.round(corpus.total)} once`, refs: [3, 5] },
+    { when: "Before each call", icon: "clipboard", what: "Write this deal's brief", cost: `${fmt$(caddy.brief / (60 / a.callMinutes))} a call`, refs: [1] },
+    { when: "During the call", icon: "zap", what: "Look up, sharpen only on pushback", cost: `${fmt$(caddy.refine)} an hour`, refs: [1, 2, 6] },
+    { when: "After the call", icon: "trend", what: "Outcomes feed back in", cost: "$0", refs: [] },
   ];
 
   return (
@@ -71,7 +71,7 @@ export default function CostPage() {
               </span>
               <div className="mt-3 text-sm font-semibold">{st.when}</div>
               <div className="text-sm text-ink-3 leading-snug">{st.what}</div>
-              <div className="num text-sm font-semibold text-fast mt-1.5">{st.cost}</div>
+              <div className="num text-sm font-semibold text-fast mt-1.5">{st.cost}<Refs ids={st.refs} /></div>
             </li>
           ))}
         </ol>
@@ -82,7 +82,7 @@ export default function CostPage() {
         <div className="grid md:grid-cols-2">
           <div className="p-7">
             <div className="text-sm text-ink-3">{modelName(naiveModel)} on every line</div>
-            <div className="num text-5xl font-semibold mt-2">{fmt$(naiveShown)}</div>
+            <div className="num text-5xl font-semibold mt-2">{fmt$(naiveShown)}<Refs ids={[1, 4, 6]} big /></div>
             <div className="text-sm text-ink-3 mt-1">per call hour · {naive.calls} big-model calls</div>
           </div>
           <div className="p-7 md:border-l border-t md:border-t-0 border-line">
@@ -92,7 +92,7 @@ export default function CostPage() {
                 <span className="num">{ratioShown.toFixed(0)}x</span> cheaper
               </span>
             </div>
-            <div className="num text-5xl font-semibold mt-2 text-fast">{fmt$(caddyShown)}</div>
+            <div className="num text-5xl font-semibold mt-2 text-fast">{fmt$(caddyShown)}<Refs ids={[1, 2, 4, 6]} big /></div>
             <div className="text-sm text-ink-3 mt-1">per call hour · 1 brief + {caddy.calls} small-model calls</div>
           </div>
         </div>
@@ -120,6 +120,30 @@ export default function CostPage() {
         <span className="num font-semibold text-ink">{fmt$(naive.total * hoursPerMonth)}</span> a month, or{" "}
         <span className="num font-semibold text-fast">{fmt$(caddy.total * hoursPerMonth)}</span>.
       </p>
+
+      {/* Sources: every number above links here */}
+      <section aria-labelledby="sources-title" className="px-1">
+        <h2 id="sources-title" className="text-xs font-semibold uppercase tracking-wider text-ink-3 mb-3">Sources</h2>
+        <ol className="grid gap-x-8 gap-y-3 md:grid-cols-2 text-sm">
+          {SOURCES.map((src) => (
+            <li key={src.id} id={`src-${src.id}`} className="flex gap-3 scroll-mt-24 target:bg-fast-soft/60 rounded-lg -mx-2 px-2 py-1 transition-colors">
+              <span className="num text-xs text-ink-3 pt-0.5 w-4 shrink-0">{src.id}</span>
+              <span className="min-w-0">
+                <span className="font-medium">{src.title}.</span> <span className="text-ink-2">{src.detail}</span>
+                <span className="block text-xs text-ink-3 mt-0.5">
+                  {"url" in src ? (
+                    <a href={src.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 underline decoration-line underline-offset-2 hover:text-ink">
+                      {src.from} <Icon name="external" size={10} />
+                    </a>
+                  ) : (
+                    src.from
+                  )}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       {/* Everything else */}
       <div className="panel px-5 py-2">
@@ -176,5 +200,20 @@ function Split({ label, parts }: { label: string; parts: [string, number][] }) {
         ))}
       </ul>
     </div>
+  );
+}
+
+// Footnote markers that jump to the Sources list.
+function Refs({ ids, big }: { ids: number[]; big?: boolean }) {
+  if (!ids.length) return null;
+  return (
+    <sup className={`${big ? "text-xs ml-1" : "text-[10px] ml-0.5"} font-normal text-ink-3`}>
+      {ids.map((id, i) => (
+        <span key={id}>
+          <a href={`#src-${id}`} className="hover:text-fast">{id}</a>
+          {i < ids.length - 1 ? "," : ""}
+        </span>
+      ))}
+    </sup>
   );
 }
