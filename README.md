@@ -66,11 +66,11 @@ Defaults: 240 utterances per hour, 30 minute calls, 25% of lines trigger a refin
 
 **Naive** (Sonnet on every line with system + full playbook + raw deal + transcript so far):
 `240 × (prefix + avg transcript) × input + 240 × 120 × output`
-With mock-mode token estimates (prefix 7.4k, 20 tokens a line) that's about **$4.41 per call hour**, or **$1.08** if you give naive prompt caching too.
+With mock-mode token estimates (prefix 7.4k, 21 tokens a line) that's about **$4.45 per call hour**, or **$1.11** if you give naive prompt caching too.
 
-**Caddy Lab:** one Sonnet brief per call (~2.1k in, 1.4k out, so $0.018 each, $0.036 per hour) plus 60 Haiku refinements on an 8.1k cached prefix (~$0.010 per hour). Fast path is $0. About **$0.046 per call hour**.
+**Caddy Lab:** one Sonnet brief per call (about 2.1k in and 1.4k out, so $0.018 each, $0.036 per hour) plus 60 Haiku refinements on an 8.6k cached prefix (about $0.011 per hour). Fast path is $0. About **$0.047 per call hour**.
 
-That's ~95x cheaper than uncached naive and ~23x cheaper than cached naive. Most of what's left is the brief, which is the right place to spend.
+That's about 95x cheaper than uncached naive and about 24x cheaper than cached naive. Most of what's left is the brief, which is the right place to spend.
 
 In live mode, `/api/tokens` uses Anthropic's token counting endpoint so both sides use measured sizes, and every real API response's `usage` object feeds the session spend on `/cost`.
 
