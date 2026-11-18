@@ -87,7 +87,7 @@ components/     CallScreen, SuggestionCard, BriefPanel, LearningLoop, Header
 lib/            config, schemas, fastpath, engine (ladder logic), retrieval, cost, prompts, embeddings
 data/           categories, deals, transcripts, mock/{briefs,refinements}
 playbook/       34 mock playbook files
-docs/           Loom script and talking points
+docs/           Talking points for the next call
 ```
 
 ## What this doesn't prove
