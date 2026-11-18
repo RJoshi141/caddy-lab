@@ -25,22 +25,14 @@ export function Header() {
   return (
     <header className="border-b border-line bg-paper/85 backdrop-blur sticky top-0 z-10">
       <div className="max-w-[1440px] mx-auto px-6 h-14 flex items-center gap-6">
-        <Link href="/" className="flex items-center gap-2">
-          {/* Mark: a dot with a ring, the "caddy listening" idea */}
-          <span className="relative grid place-items-center w-6 h-6 rounded-full bg-fast-soft">
-            <span className="w-2.5 h-2.5 rounded-full bg-fast" />
-          </span>
-          <span className="display font-semibold">Caddy Lab</span>
-        </Link>
+        <Link href="/" className="display font-semibold text-[17px]">Caddy Lab</Link>
         <nav className="flex gap-1" aria-label="Main">
           {tab("/", "Call", "phone")}
           {tab("/cost", "Cost", "dollar")}
         </nav>
         <div className="ml-auto flex items-center gap-2 text-sm">
           {mode === "live" ? (
-            <button onClick={goMock} className="press flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slow-soft text-slow">
-              <span className="w-1.5 h-1.5 rounded-full bg-slow" /> Live API · switch to mock
-            </button>
+            <button onClick={goMock} className="press text-slow hover:underline underline-offset-4">Live API · switch to mock</button>
           ) : asking ? (
             <form
               onSubmit={async (e) => {
@@ -60,9 +52,8 @@ export function Header() {
               onClick={() => setAsking(true)}
               disabled={!liveAvailable}
               title={liveAvailable ? "Use the real API" : "Live mode is off on this deployment"}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-fast-soft text-fast disabled:cursor-default"
+              className="text-ink-3 enabled:hover:text-ink disabled:cursor-default"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-fast" />
               Mock mode{liveAvailable ? " · go live" : ""}
             </button>
           )}
