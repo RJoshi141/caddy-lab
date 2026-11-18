@@ -5,14 +5,15 @@ export type Deal = {
   candidate: { name: string; currentRole: string; currentComp: string; notes: string };
   job: { title: string; client: string; comp: string; location: string; summary: string };
   client: { name: string; stage: string; hiringManager: string; notes: string };
+  fee: number; // placement fee at stake, USD
   recentEmails: { from: string; date: string; body: string }[];
 };
 
 export const DEALS: Deal[] = [
   {
-    id: "priya-ledgerline",
+    id: "nadia-ledgerline",
     candidate: {
-      name: "Priya Nair",
+      name: "Nadia Brooks",
       currentRole: "Senior Backend Engineer, retail bank (4 years)",
       currentComp: "$165k base, ~10% bonus that paid 6% last year, no equity",
       notes: "Strong on payments infra. Said early on she wants 'a real ownership role'. Has a 2 year old. Hybrid currently, 2 days.",
@@ -27,17 +28,18 @@ export const DEALS: Deal[] = [
     client: {
       name: "Ledgerline",
       stage: "Final interview done, offer being prepared",
-      hiringManager: "Dana Okafor, Head of Engineering",
-      notes: "Dana loved her system design round. Budget can stretch to 185 for the right person. Will not go above 190.",
+      hiringManager: "Marta Lindqvist, Head of Engineering",
+      notes: "Marta loved her system design round. Budget can stretch to 185 for the right person. Will not go above 190.",
     },
+    fee: 34000, // 20% of a 170k base
     recentEmails: [
-      { from: "Priya", date: "Mon", body: "Thanks for the update. Just so you know, I'm in final rounds somewhere else too, should hear by end of next week." },
-      { from: "Dana (client)", date: "Tue", body: "We want her. Can you get a feel for the number before we send the offer? Don't want to lowball." },
-      { from: "Priya", date: "Wed", body: "Happy to chat Thursday. Comp is the big one for me, a friend in a similar role is on quite a bit more. Want to talk it through before anything formal." },
+      { from: "Nadia", date: "Mon", body: "Thanks for the update. Just so you know, I'm in final rounds somewhere else too, should hear by end of next week." },
+      { from: "Marta (client)", date: "Tue", body: "We want her. Can you get a feel for the number before we send the offer? Don't want to lowball." },
+      { from: "Nadia", date: "Wed", body: "Happy to chat Thursday. Comp is the big one for me, a friend in a similar role is on quite a bit more. Want to talk it through before anything formal." },
     ],
   },
   {
-    id: "marcus-halden",
+    id: "marcus-cobalt",
     candidate: {
       name: "Marcus Reid",
       currentRole: "Product Manager, digital agency (3 years)",
@@ -46,17 +48,18 @@ export const DEALS: Deal[] = [
     },
     job: {
       title: "Senior Product Manager (IC), Patient App",
-      client: "Halden Health",
+      client: "Cobalt Health",
       comp: "$155k to $165k base, bonus",
       location: "Hybrid, 3 days in office",
       summary: "Own the patient booking app. IC role, no direct reports for at least 12 months.",
     },
     client: {
-      name: "Halden Health",
+      name: "Cobalt Health",
       stage: "Candidate has done 2 of 4 rounds",
       hiringManager: "Sam Whitlock, VP Product",
       notes: "Sam is flexible on office days for strong people (could do 2). Not flexible on it being IC.",
     },
+    fee: 32000, // 20% of a 160k base
     recentEmails: [
       { from: "Marcus", date: "Mon", body: "Second round was fine. Still trying to figure out if this is the right move to be honest." },
       { from: "Sam (client)", date: "Tue", body: "Liked Marcus. Bit quiet in the room. Is he actually keen?" },

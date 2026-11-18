@@ -41,6 +41,11 @@ export function BriefPanel({ deal, data, loading, onRegenerate, live, progress }
           <div className="font-medium truncate">{deal.candidate.name}</div>
           <div className="text-xs text-ink-3 truncate">{deal.job.title} · {deal.client.name}</div>
         </div>
+        {/* What's on the line for the recruiter */}
+        <div className="ml-auto text-right shrink-0" title="Placement fee at stake">
+          <div className="num text-sm font-semibold">${Math.round(deal.fee / 1000)}k</div>
+          <div className="text-[11px] text-ink-3">fee at stake</div>
+        </div>
       </div>
 
       {loading && !data && (

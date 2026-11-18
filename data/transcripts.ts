@@ -8,9 +8,9 @@ export const SCENARIOS: Scenario[] = [
   {
     id: "comp-pushback",
     title: "Comp pushback + competing offer",
-    dealId: "priya-ledgerline",
+    dealId: "nadia-ledgerline",
     lines: [
-      { speaker: "recruiter", text: "Thanks for making time, Priya. Dana's team were really impressed. How are you feeling after the final?", gapMs: 600 },
+      { speaker: "recruiter", text: "Thanks for making time, Nadia. Marta's team were really impressed. How are you feeling after the final?", gapMs: 600 },
       { speaker: "candidate", text: "Good, I liked the team a lot. The payouts problem is genuinely interesting.", gapMs: 1800 },
       { speaker: "recruiter", text: "Great. Before they put anything formal together, I wanted to talk numbers.", gapMs: 1600 },
       { speaker: "candidate", text: "Yeah, so honestly the range you mentioned is lower than I was hoping for. I'd need the base to be closer to 190.", gapMs: 2200 },
@@ -24,13 +24,13 @@ export const SCENARIOS: Scenario[] = [
       { speaker: "recruiter", text: "That's fair.", gapMs: 1000 },
       { speaker: "candidate", text: "And honestly my manager has hinted they'd match it if I resigned.", gapMs: 2200 },
       { speaker: "candidate", text: "So it really comes down to the base salary for me.", gapMs: 1800 },
-      { speaker: "recruiter", text: "Understood. Let me think about how to take this back to Dana.", gapMs: 1600 },
+      { speaker: "recruiter", text: "Understood. Let me think about how to take this back to Marta.", gapMs: 1600 },
     ],
   },
   {
     id: "lukewarm",
     title: "Lukewarm candidate, motivation mismatch",
-    dealId: "marcus-halden",
+    dealId: "marcus-cobalt",
     lines: [
       { speaker: "recruiter", text: "Hey Marcus, how did round two with Sam go?", gapMs: 600 },
       { speaker: "candidate", text: "It was fine I guess. Sam's nice.", gapMs: 1800 },

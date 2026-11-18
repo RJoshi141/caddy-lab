@@ -3,12 +3,12 @@
 import type { Brief, Usage } from "@/lib/schemas";
 
 export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
-  "priya-ledgerline": {
+  "nadia-ledgerline": {
     usage: { model: "claude-sonnet-5-5", input_tokens: 2140, output_tokens: 1380 },
     brief: {
-      dealId: "priya-ledgerline",
+      dealId: "nadia-ledgerline",
       summary:
-        "Priya likes the team and the problem. The risk is a 190 anchor borrowed from a friend, a parallel final round, and a manager likely to counter. Budget tops out at 185, so the gap is small and mostly about how she frames it.",
+        "Nadia likes the team and the problem. The risk is a 190 anchor borrowed from a friend, a parallel final round, and a manager likely to counter. Budget tops out at 185, so the gap is small and mostly about how she frames it.",
       motivations: ["Real ownership (the payouts service is hers end to end)", "Not feeling like she took a step down vs peers", "Stability with a young kid"],
       riskSignals: [
         { signal: "Anchored to peer comp", severity: "med", evidence: "Email Wed: a friend in a similar role is on more. Client ceiling 185, hard stop 190" },
@@ -22,7 +22,7 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
       ],
       ladders: {
         comp_gap: [
-          { question: "When you say 190, is that the number you need, or the number that would stop you feeling behind your friend?", why: "Splits an ego anchor from a real cash need before anyone goes back to Dana", signals: ["number mentioned", "peer anchor"], playbookRef: "comp-gap.md" },
+          { question: "When you say 190, is that the number you need, or the number that would stop you feeling behind your friend?", why: "Splits an ego anchor from a real cash need before anyone goes back to Marta", signals: ["number mentioned", "peer anchor"], playbookRef: "comp-gap.md" },
           { question: "Your bonus paid 6% last year, not 10. If we compare real take home, not targets, how far apart are we actually?", why: "Her current package is weaker than it looks on paper", signals: ["base vs total"], playbookRef: "base-vs-total-comp.md" },
           { question: "If Ledgerline landed at 185 base with the payouts service fully yours, what would still give you pause?", why: "Tests whether ownership closes the last 5k", signals: ["comp below expectation"], playbookRef: "comp-gap.md" },
           { question: "If I brought back 185 and an early comp review at six months, is that a yes, or is there a number below which it's a no?", why: "Gets her walk-away number inside the client's ceiling", signals: ["base vs total"], playbookRef: "comp-gap.md" },
@@ -40,10 +40,10 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
       },
     },
   },
-  "marcus-halden": {
+  "marcus-cobalt": {
     usage: { model: "claude-sonnet-5-5", input_tokens: 1820, output_tokens: 1210 },
     brief: {
-      dealId: "marcus-halden",
+      dealId: "marcus-cobalt",
       summary:
         "Marcus is not really in market. He wants to lead people, and this is a firm IC role with a 70 minute commute. Sam can flex to 2 office days but not on the IC part. The honest outcome may be parking him for a better fit.",
       motivations: ["Move into people leadership", "Less commuting", "Interesting product (lower priority)"],
@@ -61,7 +61,7 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
         motivation_mismatch: [
           { question: "When you picture leading a team, is it the people part you want, or the influence over what gets built?", why: "A senior IC with real product influence might scratch the second itch, not the first", signals: ["wants something else"], playbookRef: "motivation-mismatch.md" },
           { question: "What part of Sam's pitch, if any, actually got your attention?", why: "Finds the one real hook before deciding to park him", signals: ["lukewarm language"], playbookRef: "motivation-mismatch.md" },
-          { question: "If this one's not it, what should I be looking for for you? A team lead role at a smaller company?", why: "Keeps the relationship even if Halden is a no", signals: ["low energy"], playbookRef: "career-direction.md" },
+          { question: "If this one's not it, what should I be looking for for you? A team lead role at a smaller company?", why: "Keeps the relationship even if Cobalt is a no", signals: ["low energy"], playbookRef: "career-direction.md" },
         ],
         remote_location: [
           { question: "If it were two days, and you picked which two, does the commute still kill it?", why: "Sam can do 2 days, so this one is solvable", signals: ["office days", "commute"], playbookRef: "remote-hybrid.md" },
