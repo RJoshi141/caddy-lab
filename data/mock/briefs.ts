@@ -22,10 +22,14 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
       ],
       drewOn: { deals: 1284, files: 9 },
       nextSteps: [
-        "Tell Marta the real gap is about 5k on base, not 25k.",
-        "Go back with 185 and a six month comp review in writing.",
         "Prep Nadia for the counteroffer before she resigns.",
+        "Book a short call for the day she hands in her notice.",
       ],
+      followUp: {
+        to: "Marta Lindqvist",
+        subject: "Nadia: where we landed on comp",
+        body: "Hi Marta, good news on Nadia. The gap is smaller than it looked: her 190 was a friend's total comp, not base. I think 185 base with a written six month comp review gets us there. She's in a final round elsewhere and her bank will likely counter, so speed matters. Can we get the offer out by Thursday?",
+      },
       ladders: {
         comp_gap: [
           { question: "When you say 190, is that the number you need, or the number that would stop you feeling behind your friend?", why: "Splits an ego anchor from a real cash need before anyone goes back to Marta", signals: ["number mentioned", "peer anchor"], playbookRef: "comp-gap.md", evidence: { deals: 214, rate: 0.71, baseline: 0.46, example: "Senior engineer, fintech, anchored to a friend's pay. Split base from total, accepted at 182k." } },
@@ -65,10 +69,14 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
       ],
       drewOn: { deals: 876, files: 7 },
       nextSteps: [
-        "Ask Sam if the role can include one direct report within a year.",
-        "Offer two fixed office days to take the commute off the table.",
+        "Hold the third round until Sam answers.",
         "If it's still lukewarm, park Marcus and look for a team lead role.",
       ],
+      followUp: {
+        to: "Sam Whitlock",
+        subject: "Marcus: honest read",
+        body: "Hi Sam, quick read after my call with Marcus. He likes the product, but he wants a path to managing people, and three office days is a stretch with his commute. Could the role include one direct report within a year, and could we offer two fixed office days? If not, I'd rather tell you now than push him.",
+      },
       ladders: {
         motivation_mismatch: [
           { question: "When you picture leading a team, is it the people part you want, or the influence over what gets built?", why: "A senior IC with real product influence might scratch the second itch, not the first", signals: ["wants something else"], playbookRef: "motivation-mismatch.md", evidence: { deals: 163, rate: 0.52, baseline: 0.31, example: "Wanted influence, not reports. Took a senior IC role with roadmap ownership." } },

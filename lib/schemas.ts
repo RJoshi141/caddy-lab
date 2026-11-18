@@ -31,6 +31,8 @@ export const Brief = z.object({
   drewOn: z.object({ deals: z.number(), files: z.number() }).optional(),
   // What the recruiter should do after the call, if it goes the way the brief expects.
   nextSteps: z.array(z.string()).optional(),
+  // A follow-up drafted before the call, ready to send the moment it ends.
+  followUp: z.object({ to: z.string(), subject: z.string(), body: z.string() }).optional(),
 });
 
 export const Refinement = z.object({

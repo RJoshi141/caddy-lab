@@ -318,7 +318,7 @@ export function CallScreen() {
         {/* The one thing to look at */}
         <section className="space-y-4 min-w-0" aria-label="Ask next">
           {done && cards.length > 0 ? (
-            <Recap cards={cards} nextSteps={briefData?.brief.nextSteps ?? []} name={firstName} />
+            <Recap key={scenarioId} cards={cards} nextSteps={briefData?.brief.nextSteps ?? []} followUp={briefData?.brief.followUp} name={firstName} />
           ) : current ? (
             <SuggestionCard key={current.id} s={current} ladderSize={ladderSize} upNext={upNext} onAct={(a) => act(current, a)} onPeek={setPeek} />
           ) : (
@@ -428,7 +428,8 @@ function Markdown({ text }: { text: string }) {
 }
 
 // After the call: what happened, with nothing for the recruiter to write up.
-function Recap({ cards, nextSteps, name }: { cards: Card[]; nextSteps: string[]; name: string }) {
+function Recap({ cards, nextSteps, followUp, name }: { cards: Card[]; nextSteps: string[]; followUp?: { to: string; subject: string; body: string }; name: string }) {
+  const [sent, setSent] = useState(false);
   const asked = cards.filter((c) => c.autoAsked).length;
   const used = cards.filter((c) => c.acted === "used").length;
   const moments = [...new Set(cards.map((c) => c.categoryId))];
@@ -439,6 +440,31 @@ function Recap({ cards, nextSteps, name }: { cards: Card[]; nextSteps: string[];
         <Stat value={used} label={asked ? `used, ${asked} caught automatically` : "used"} />
         <Stat value={moments.length} label="moments flagged" />
       </div>
+      {/* The follow-up is already written. One tap, like replying YES. */}
+      {followUp && (
+        <div className={`rounded-2xl border transition-colors duration-500 ${sent ? "border-fast/40 bg-fast-soft/40" : "border-line bg-paper/60"}`}>
+          <div className="flex items-center gap-2 px-4 pt-3.5 text-xs text-ink-3">
+            <Icon name="message" size={12} className="text-fast" />
+            <span>Drafted for you · to <span className="text-ink-2 font-medium">{followUp.to}</span></span>
+          </div>
+          <div className="px-4 pt-1.5 pb-3">
+            <div className="font-medium text-sm">{followUp.subject}</div>
+            <p className="mt-1 text-sm text-ink-2 leading-relaxed">{followUp.body}</p>
+          </div>
+          <div className="flex items-center justify-end gap-2 px-4 pb-3.5">
+            {sent ? (
+              <span className="rise flex items-center gap-1.5 min-h-10 text-sm text-fast font-medium">
+                <Icon name="check" size={15} /> Sent from your Gmail
+              </span>
+            ) : (
+              <button onClick={() => setSent(true)} className="press flex items-center gap-1.5 min-h-10 px-4 rounded-xl bg-ink text-paper text-sm">
+                <Icon name="send" size={14} /> Send
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div>
         <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-2"><Icon name="ear" size={12} /> What came up</h3>
         <div className="flex flex-wrap gap-1.5">
@@ -451,7 +477,7 @@ function Recap({ cards, nextSteps, name }: { cards: Card[]; nextSteps: string[];
       </div>
       {nextSteps.length > 0 && (
         <div>
-          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-2"><Icon name="target" size={12} /> Next steps for {name}&apos;s deal</h3>
+          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-2"><Icon name="target" size={12} /> {followUp ? "Then" : `Next steps for ${name}'s deal`}</h3>
           <ol className="space-y-2">
             {nextSteps.map((n, i) => (
               <li key={n} className="rise flex gap-2.5 text-sm" style={{ animationDelay: `${i * 80}ms` }}>
