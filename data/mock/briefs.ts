@@ -11,7 +11,7 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
         "Priya likes the team and the problem. The risk is a 190 anchor borrowed from a friend, a parallel final round, and a manager likely to counter. Budget tops out at 185, so the gap is small and mostly about how she frames it.",
       motivations: ["Real ownership (the payouts service is hers end to end)", "Not feeling like she took a step down vs peers", "Stability with a young kid"],
       riskSignals: [
-        { signal: "Anchored to peer comp", severity: "med", evidence: "Wants ~190; client ceiling is 185, hard stop 190" },
+        { signal: "Anchored to peer comp", severity: "med", evidence: "Email Wed: a friend in a similar role is on more. Client ceiling 185, hard stop 190" },
         { signal: "Competing final round", severity: "high", evidence: "Email Mon: hears by end of next week" },
         { signal: "Counteroffer likely", severity: "high", evidence: "4 years at the bank, no equity, bonus underpaid" },
       ],
@@ -22,7 +22,7 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
       ],
       ladders: {
         comp_gap: [
-          { question: "When you say 190, is that the number you need, or the number that would stop you feeling behind your friend at Stripe?", why: "Splits an ego anchor from a real cash need before anyone goes back to Dana", signals: ["number mentioned", "peer anchor"], playbookRef: "comp-gap.md" },
+          { question: "When you say 190, is that the number you need, or the number that would stop you feeling behind your friend?", why: "Splits an ego anchor from a real cash need before anyone goes back to Dana", signals: ["number mentioned", "peer anchor"], playbookRef: "comp-gap.md" },
           { question: "Your bonus paid 6% last year, not 10. If we compare real take home, not targets, how far apart are we actually?", why: "Her current package is weaker than it looks on paper", signals: ["base vs total"], playbookRef: "base-vs-total-comp.md" },
           { question: "If Ledgerline landed at 185 base with the payouts service fully yours, what would still give you pause?", why: "Tests whether ownership closes the last 5k", signals: ["comp below expectation"], playbookRef: "comp-gap.md" },
           { question: "If I brought back 185 and an early comp review at six months, is that a yes, or is there a number below which it's a no?", why: "Gets her walk-away number inside the client's ceiling", signals: ["base vs total"], playbookRef: "comp-gap.md" },

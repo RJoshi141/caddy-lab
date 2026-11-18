@@ -33,7 +33,7 @@ export const DEALS: Deal[] = [
     recentEmails: [
       { from: "Priya", date: "Mon", body: "Thanks for the update. Just so you know, I'm in final rounds somewhere else too, should hear by end of next week." },
       { from: "Dana (client)", date: "Tue", body: "We want her. Can you get a feel for the number before we send the offer? Don't want to lowball." },
-      { from: "Priya", date: "Wed", body: "Happy to chat Thursday. Want to talk through comp before anything formal." },
+      { from: "Priya", date: "Wed", body: "Happy to chat Thursday. Comp is the big one for me, a friend in a similar role is on quite a bit more. Want to talk it through before anything formal." },
     ],
   },
   {

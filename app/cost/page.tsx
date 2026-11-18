@@ -7,6 +7,7 @@ import { CALL_DEFAULTS, MODELS, NAIVE_OPTIONS, type ModelId } from "@/lib/config
 import { caddyPerHour, fmt$, naivePerHour, usageCost, type Assumptions, type TokenSizes } from "@/lib/cost";
 import { MOCK_BRIEFS } from "@/data/mock/briefs";
 import { SCENARIOS } from "@/data/transcripts";
+import { Icon } from "@/components/Icon";
 
 export default function CostPage() {
   const session = useSession();
@@ -44,7 +45,7 @@ export default function CostPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">What one call hour costs</h1>
+        <h1 className="display text-3xl font-semibold">What one call hour costs</h1>
         <p className="text-ink-2 mt-1">
           Same playbook, same deal, same transcript. Token sizes are{" "}
           <span className="font-medium">{sizes.mode === "counted" ? "counted with the API's token counter" : "estimated at 4 characters a token (mock mode)"}</span>. Prices are in one config file.
@@ -52,23 +53,23 @@ export default function CostPage() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-line bg-card p-6">
-          <div className="text-sm text-ink-3">Naive: {naiveModel.replace("claude-", "")} on every line, full context</div>
+        <div className="panel lift p-6">
+          <div className="flex items-center gap-1.5 text-sm text-ink-3"><Icon name="alert" size={14} />Naive: {naiveModel.replace("claude-", "")} on every line, full context</div>
           <div className="num text-5xl font-semibold mt-2">{fmt$(naive.total)}</div>
           <div className="text-sm text-ink-3 mt-1">per call hour · {naive.calls} model calls</div>
           <Bars rows={[["playbook + deal, every line", naive.prefixCost], ["growing transcript", naive.transcriptCost], ["output", naive.outputCost]]} max={naive.total} color="bg-ink" />
         </div>
-        <div className="rounded-xl border border-fast/30 bg-card p-6">
-          <div className="text-sm text-fast">Caddy Lab: brief once, local fast path, Haiku on pushback</div>
+        <div className="panel lift p-6 border-fast/30">
+          <div className="flex items-center gap-1.5 text-sm text-fast"><Icon name="zap" size={14} />Caddy Lab: brief once, local fast path, Haiku on pushback</div>
           <div className="num text-5xl font-semibold mt-2 text-fast">{fmt$(caddy.total)}</div>
-          <div className="text-sm text-ink-3 mt-1">per call hour · 1 brief + {caddy.calls} Haiku calls · <span className="text-ink font-medium">{ratio.toFixed(0)}x cheaper</span></div>
+          <div className="text-sm text-ink-3 mt-1">per call hour · 1 brief + {caddy.calls} Haiku calls · <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-fast-soft text-fast font-medium"><Icon name="trend" size={12} />{ratio.toFixed(0)}x cheaper</span></div>
           <Bars rows={[[`pre-call brief (Sonnet, ${(60 / a.callMinutes).toFixed(1)} per hour)`, caddy.brief], ["refinements (Haiku, cached prefix)", caddy.refine], ["fast path", 0]]} max={naive.total} color="bg-fast" />
         </div>
       </div>
 
-      <div className="rounded-xl border border-line bg-card p-5 grid md:grid-cols-2 gap-6 text-sm">
+      <div className="panel p-5 grid md:grid-cols-2 gap-6 text-sm">
         <div className="space-y-2">
-          <h2 className="font-semibold mb-2">Assumptions</h2>
+          <h2 className="flex items-center gap-1.5 font-semibold mb-2"><Icon name="gauge" size={14} />Assumptions</h2>
           <Row label="Scenario">
             <select value={scenarioId} onChange={(e) => setScenarioId(e.target.value)} className="px-2 py-1 rounded border border-line bg-paper">
               {SCENARIOS.map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}
@@ -88,7 +89,7 @@ export default function CostPage() {
           <p className="text-xs text-ink-3 pt-2">Flip caching on to see the fair version. Caching helps naive a lot, but the transcript still grows every line and it still pays big-model output on every turn.</p>
         </div>
         <div className="space-y-2">
-          <h2 className="font-semibold mb-2">At scale, per month</h2>
+          <h2 className="flex items-center gap-1.5 font-semibold mb-2"><Icon name="users" size={14} />At scale, per month</h2>
           <Row label="Recruiters on calls"><input type="number" value={scale.recruiters} onChange={(e) => setScale({ ...scale, recruiters: +e.target.value })} className="num w-24 px-2 py-1 rounded border border-line bg-paper text-right" /></Row>
           <Row label="Call hours per day"><input type="number" value={scale.hoursPerDay} onChange={(e) => setScale({ ...scale, hoursPerDay: +e.target.value })} className="num w-24 px-2 py-1 rounded border border-line bg-paper text-right" /></Row>
           <Row label="Working days"><input type="number" value={scale.days} onChange={(e) => setScale({ ...scale, days: +e.target.value })} className="num w-24 px-2 py-1 rounded border border-line bg-paper text-right" /></Row>
@@ -99,9 +100,9 @@ export default function CostPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-line bg-card p-5 text-sm grid md:grid-cols-3 gap-4">
+      <div className="panel p-5 text-sm grid md:grid-cols-3 gap-4">
         <div>
-          <h2 className="font-semibold mb-1">Token sizes used</h2>
+          <h2 className="flex items-center gap-1.5 font-semibold mb-1"><Icon name="layers" size={14} />Token sizes used</h2>
           <ul className="num text-xs text-ink-2 space-y-0.5">
             <li>naive prefix {sizes.sizes.naivePrefix.toLocaleString()}</li>
             <li>per transcript line {sizes.sizes.tokensPerLine}</li>
@@ -110,13 +111,13 @@ export default function CostPage() {
           </ul>
         </div>
         <div>
-          <h2 className="font-semibold mb-1">This session</h2>
+          <h2 className="flex items-center gap-1.5 font-semibold mb-1"><Icon name="clock" size={14} />This session</h2>
           <p className="text-ink-2">{session.spend.length} API results seen, {live.length} live.</p>
           <p className="num text-ink-2">{fmt$(liveTotal)} real spend</p>
           {avgRefineMs > 0 && <p className="text-ink-3 text-xs">avg refine round trip {Math.round(avgRefineMs)} ms{refines.every((r) => r.mock) ? " (simulated)" : ""}</p>}
         </div>
         <div>
-          <h2 className="font-semibold mb-1">The latency side</h2>
+          <h2 className="flex items-center gap-1.5 font-semibold mb-1"><Icon name="zap" size={14} />The latency side</h2>
           <p className="text-ink-2">Naive needs a big model round trip before anything shows. Caddy Lab shows a question in milliseconds and only upgrades it if Haiku finds something better.</p>
         </div>
       </div>
@@ -134,7 +135,7 @@ function Bars({ rows, max, color }: { rows: [string, number][]; max: number; col
       {rows.map(([label, v]) => (
         <div key={label} className="text-xs">
           <div className="flex justify-between text-ink-3 mb-0.5"><span>{label}</span><span className="num">{fmt$(v)}</span></div>
-          <div className="h-2 rounded bg-paper overflow-hidden"><div className={`h-full ${color}`} style={{ width: `${Math.max(v > 0 ? 0.6 : 0, (v / max) * 100)}%` }} /></div>
+          <div className="h-2 rounded-full bg-paper overflow-hidden"><div className={`h-full rounded-full transition-[width] duration-500 ${color}`} style={{ width: `${Math.max(v > 0 ? 0.6 : 0, (v / max) * 100)}%` }} /></div>
         </div>
       ))}
     </div>

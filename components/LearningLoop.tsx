@@ -1,8 +1,9 @@
 "use client";
-// Used/ignored by category. The point: questions recruiters keep using get
-// promoted into the pre-built ladders next time, so the live path gets better for free.
+// Used/ignored by category. Questions recruiters keep using get flagged to
+// pre-build into future briefs, so the live path gets better for free.
 import { CATEGORY_BY_ID } from "@/data/categories";
 import { clearLog, type LogEntry } from "@/lib/log";
+import { CATEGORY_ICON, Icon } from "./Icon";
 
 export function LearningLoop({ log, onClear }: { log: LogEntry[]; onClear: () => void }) {
   const byCat = new Map<string, { used: number; ignored: number }>();
@@ -11,40 +12,55 @@ export function LearningLoop({ log, onClear }: { log: LogEntry[]; onClear: () =>
     x[e.action]++;
     byCat.set(e.categoryId, x);
   }
-  // Promote: used at least twice and used more than ignored.
+  // Promote: used at least twice.
   const counts = new Map<string, number>();
   log.filter((e) => e.action === "used").forEach((e) => counts.set(e.question, (counts.get(e.question) ?? 0) + 1));
   const promoted = [...counts].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3);
 
   return (
-    <section className="rounded-xl border border-line bg-card p-4 text-sm">
-      <div className="flex items-baseline gap-2 mb-3">
-        <h2 className="font-semibold">Learning loop</h2>
-        <span className="text-xs text-ink-3">{log.length} logged</span>
+    <section className="panel p-5 text-sm" aria-labelledby="loop-title">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="grid place-items-center w-7 h-7 rounded-lg bg-fast-soft text-fast"><Icon name="trend" size={14} /></span>
+        <div>
+          <h2 id="loop-title" className="font-semibold leading-tight">Learning loop</h2>
+          <p className="text-xs text-ink-3">{log.length} {log.length === 1 ? "response" : "responses"} logged</p>
+        </div>
         {log.length > 0 && (
-          <button onClick={() => { clearLog(); onClear(); }} className="ml-auto text-xs underline text-ink-3">clear</button>
+          <button onClick={() => { clearLog(); onClear(); }} className="press ml-auto flex items-center gap-1 text-xs text-ink-3 px-2 py-1 rounded-lg hover:bg-paper hover:text-ink">
+            <Icon name="trash" size={12} /> clear
+          </button>
         )}
       </div>
-      {log.length === 0 && <p className="text-ink-3">Mark suggestions as used or ignored. Questions that keep getting used get pre-built into future briefs.</p>}
-      <div className="space-y-1.5">
+
+      {log.length === 0 && (
+        <p className="text-ink-3 leading-relaxed">Tap “Used it” or “Ignored” on a question. The ones recruiters keep using get flagged to pre-build for the next call.</p>
+      )}
+
+      <ul className="space-y-2.5">
         {[...byCat].map(([cat, x]) => {
           const total = x.used + x.ignored;
           return (
-            <div key={cat} className="grid grid-cols-[1fr_120px_48px] items-center gap-2">
-              <span>{CATEGORY_BY_ID[cat]?.label ?? cat}</span>
-              <div className="h-1.5 rounded bg-line overflow-hidden">
-                <div className="h-full bg-fast" style={{ width: `${(x.used / total) * 100}%` }} />
+            <li key={cat} className="rise">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon name={CATEGORY_ICON[cat] ?? "message"} size={13} className="text-fast" />
+                <span className="flex-1">{CATEGORY_BY_ID[cat]?.label ?? cat}</span>
+                <span className="num text-xs text-ink-3">{x.used} used · {x.ignored} ignored</span>
               </div>
-              <span className="num text-xs text-ink-3 text-right">{x.used}/{total}</span>
-            </div>
+              <div className="h-1.5 rounded-full bg-line overflow-hidden">
+                <div className="h-full bg-fast rounded-full transition-[width] duration-500" style={{ width: `${(x.used / total) * 100}%` }} />
+              </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
+
       {promoted.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-line">
-          <div className="text-xs text-ink-3 mb-1">Ready to pre-build</div>
+        <div className="mt-4 pt-4 border-t border-line">
+          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-2">
+            <Icon name="sparkles" size={12} /> Ready to pre-build
+          </h3>
           {promoted.map(([q, n]) => (
-            <p key={q} className="text-ink-2 mb-1">“{q}” <span className="num text-xs text-ink-3">×{n}</span></p>
+            <p key={q} className="text-ink-2 mb-1.5">“{q}” <span className="num text-xs text-ink-3">×{n}</span></p>
           ))}
         </div>
       )}
