@@ -4,14 +4,14 @@ import { SCENARIOS, SCENARIO_BY_ID } from "@/data/transcripts";
 import { DEAL_BY_ID } from "@/data/deals";
 import playbook from "@/data/playbook-index.json";
 import { useSession } from "@/app/session";
-import { keywordClassify, type Classification, type Suggestion } from "@/lib/fastpath";
+import { keywordClassify, rungFor, type Classification, type Suggestion } from "@/lib/fastpath";
 import { initialEngine, step, type EngineState } from "@/lib/engine";
 import { topKPlaybook } from "@/lib/retrieval";
 import { useEmbeddings } from "@/lib/useEmbeddings";
 import { appendLog, readLog, type LogEntry } from "@/lib/log";
 import { FASTPATH } from "@/lib/config";
 import { ASKED_THRESHOLD, askedSimilarity } from "@/lib/match";
-import { SuggestionCard, SuggestionRow } from "./SuggestionCard";
+import { MOMENT, SuggestionCard, SuggestionRow } from "./SuggestionCard";
 import { CATEGORY_ICON, Icon } from "./Icon";
 import { Disclosure } from "./ui";
 import { CATEGORY_BY_ID } from "@/data/categories";
@@ -42,6 +42,10 @@ export function CallScreen() {
     cardsRef.current = cards;
   }, [cards]);
   const busy = useRef(false);
+  // The line currently being "heard": words appear like live captions.
+  const [streaming, setStreaming] = useState<{ i: number; words: number } | null>(null);
+  const runId = useRef(0);
+  const [heard, setHeard] = useState(0); // lines fully processed
   const feed = useRef<HTMLOListElement>(null);
   // Keep the newest line in view, like a live caption feed.
   useEffect(() => {
@@ -77,6 +81,10 @@ export function CallScreen() {
   }, [deal.id, session.mode]);
 
   const reset = useCallback(() => {
+    runId.current++;
+    busy.current = false;
+    setStreaming(null);
+    setHeard(0);
     setPlaying(false);
     setIdx(0);
     setCards([]);
@@ -146,19 +154,45 @@ export function CallScreen() {
   const next = useCallback(async () => {
     if (busy.current || idx >= scenario.lines.length) return;
     busy.current = true;
-    await playLine(idx);
-    setIdx((x) => x + 1);
-    if (idx + 1 >= scenario.lines.length) setPlaying(false);
+    const run = runId.current;
+    const i = idx;
+    const words = scenario.lines[i].text.split(" ").length;
+    setIdx(i + 1);
+    // Captions arrive word by word, like real speech-to-text.
+    const per = Math.min(55, 900 / words) / speed;
+    for (let k = 1; k <= words; k++) {
+      if (runId.current !== run) return;
+      setStreaming({ i, words: k });
+      await new Promise((r) => setTimeout(r, per));
+    }
+    if (runId.current !== run) return;
+    setStreaming(null);
+    // The sentence just ended: fast path runs now.
+    await playLine(i);
+    if (i + 1 >= scenario.lines.length) setPlaying(false);
     busy.current = false;
-  }, [idx, scenario.lines.length, playLine]);
+    setHeard(i + 1);
+  }, [idx, scenario.lines, playLine, speed]);
+
+  // Hang up: hear the rest of the call instantly and jump to the recap.
+  const endCall = useCallback(async () => {
+    runId.current++;
+    setStreaming(null);
+    setPlaying(false);
+    const total = scenario.lines.length;
+    for (let i = heard; i < total; i++) await playLine(i);
+    busy.current = false;
+    setIdx(total);
+    setHeard(total);
+  }, [heard, scenario.lines.length, playLine]);
 
   // Autoplay: wait the line's gap, then play it.
   useEffect(() => {
-    if (!playing) return;
-    if (idx >= scenario.lines.length) return;
+    // Wait until the last line has been fully heard, then pause like a real speaker would.
+    if (!playing || heard !== idx || idx >= scenario.lines.length) return;
     const t = setTimeout(next, scenario.lines[idx].gapMs / speed);
     return () => clearTimeout(t);
-  }, [playing, idx, speed, scenario.lines, next]);
+  }, [playing, heard, idx, speed, scenario.lines, next]);
 
   function act(card: Card, action: "used" | "ignored", auto = false) {
     setCards((cs) => cs.map((c) => (c.id === card.id ? { ...c, acted: action, autoAsked: auto } : c)));
@@ -174,6 +208,7 @@ export function CallScreen() {
   const progress = cards.reduce<Record<string, number>>((m, c) => ({ ...m, [c.categoryId]: Math.max(m[c.categoryId] ?? 0, c.rung + 1) }), {});
   const ladderSize = current ? briefData?.brief.ladders[current.categoryId]?.length ?? 0 : 0;
   const firstName = deal.candidate.name.split(" ")[0];
+  const upNext = current ? rungFor(briefData?.brief ?? null, current.categoryId, current.rung + 1)?.question : undefined;
 
   // Keyboard: space plays/pauses, right arrow steps. Handy while recording.
   useEffect(() => {
@@ -199,8 +234,19 @@ export function CallScreen() {
             </span>
             <div>
               <h2 id="call-title" className="font-semibold leading-tight">Live call</h2>
-              <p className="text-xs text-ink-3">{playing ? "Listening…" : done ? "Call ended" : idx === 0 ? "Ready when you are" : "Paused"}</p>
+              <p className="text-xs text-ink-3">{streaming ? `${scenario.lines[streaming.i].speaker === "candidate" ? firstName : "You"} speaking…` : playing ? "Listening…" : done ? "Call ended" : idx === 0 ? "Ready when you are" : "Paused"}</p>
             </div>
+            {/* Voice level: moves only while someone is talking */}
+            <div className={`ml-auto flex items-end gap-0.5 h-5 transition-opacity duration-300 ${streaming ? "opacity-100" : "opacity-0"}`} aria-hidden="true">
+              {[0, 1, 2, 3, 4].map((k) => (
+                <span key={k} className={`eq w-1 rounded-full ${streaming && scenario.lines[streaming.i].speaker === "candidate" ? "bg-ink" : "bg-fast"}`} style={{ animationDelay: `${k * 110}ms` }} />
+              ))}
+            </div>
+            {idx > 0 && !done && (
+              <button onClick={endCall} className="press ml-1 px-3 py-1.5 rounded-full text-xs font-medium bg-risk-soft text-risk hover:bg-risk hover:text-white">
+                End call
+              </button>
+            )}
           </div>
 
           <label className="block">
@@ -214,7 +260,7 @@ export function CallScreen() {
             <button onClick={() => setPlaying((p) => !p)} disabled={!ready || done} className="press flex items-center justify-center gap-1.5 min-h-10 px-4 rounded-xl bg-ink text-paper disabled:opacity-40 w-[92px]">
               <Icon name={playing ? "pause" : "play"} size={14} />{playing ? "Pause" : "Play"}
             </button>
-            <button onClick={next} disabled={!ready || playing || done} className="press flex items-center gap-1.5 min-h-10 px-3 rounded-xl border border-line hover:bg-paper disabled:opacity-40">
+            <button onClick={next} disabled={!ready || playing || done || !!streaming} className="press flex items-center gap-1.5 min-h-10 px-3 rounded-xl border border-line hover:bg-paper disabled:opacity-40">
               <Icon name="step" size={14} />Step
             </button>
             <button onClick={reset} aria-label="Reset" title="Reset" className="press grid place-items-center w-10 h-10 rounded-xl border border-line hover:bg-paper">
@@ -255,7 +301,14 @@ export function CallScreen() {
                 <div className={`max-w-[85%] flex flex-col ${isCand ? "items-start" : "items-end"}`}>
                   <span className="text-xs text-ink-3 mb-1 px-1">{isCand ? firstName : "Recruiter"}</span>
                   <p className={`text-sm leading-relaxed px-3 py-2 rounded-2xl transition-colors ${isCand ? `rounded-tl-md bg-paper text-ink ${latest ? "ring-1 ring-ink/15" : ""}` : "rounded-tr-md bg-fast-soft/60 text-ink-2"}`}>
-                    {l.text}
+                    {streaming?.i === i ? (
+                      <>
+                        {l.text.split(" ").slice(0, streaming.words).join(" ")}
+                        <span className="caret text-ink-3" />
+                      </>
+                    ) : (
+                      l.text
+                    )}
                   </p>
                   {fired && (
                     <span className="mt-1 flex items-center gap-1 text-[11px] text-fast px-1">
@@ -280,30 +333,37 @@ export function CallScreen() {
       {/* The suggestion */}
       <section className="space-y-4 min-w-0" aria-labelledby="sugg-title">
         <div className="flex items-center gap-2">
-          <Icon name="sparkles" size={16} className="text-fast" />
-          <h2 id="sugg-title" className="font-semibold">Suggested question</h2>
-          <span className="text-xs text-ink-3 hidden sm:inline">Shows instantly, then Haiku sharpens it in the background</span>
+          <Icon name={done && cards.length ? "check" : "sparkles"} size={16} className="text-fast" />
+          <h2 id="sugg-title" className="font-semibold">{done && cards.length ? "After the call" : "Ask next"}</h2>
         </div>
-        {current ? (
-          <SuggestionCard key={current.id} s={current} ladderSize={ladderSize} onAct={(a) => act(current, a)} onPeek={setPeek} />
+        {done && cards.length > 0 ? (
+          <Recap cards={cards} nextSteps={briefData?.brief.nextSteps ?? []} name={firstName} />
+        ) : current ? (
+          <SuggestionCard key={current.id} s={current} ladderSize={ladderSize} upNext={upNext} onAct={(a) => act(current, a)} onPeek={setPeek} />
         ) : (
           <div className="panel border-dashed p-10 text-center">
-            <span className="mx-auto mb-3 grid place-items-center w-11 h-11 rounded-full bg-fast-soft text-fast"><Icon name="ear" size={20} /></span>
-            <p className="font-medium">Listening for a moment worth digging into</p>
-            <p className="mt-1 text-sm text-ink-3">Most lines aren&apos;t pushback, so the caddy stays quiet until one is.</p>
+            {streaming || playing ? (
+              <div className="mx-auto mb-3 flex items-end justify-center gap-1 h-8" aria-hidden="true">
+                {[0, 1, 2, 3, 4].map((k) => <span key={k} className="eq w-1.5 rounded-full bg-fast" style={{ animationDelay: `${k * 110}ms` }} />)}
+              </div>
+            ) : (
+              <span className="mx-auto mb-3 grid place-items-center w-11 h-11 rounded-full bg-fast-soft text-fast"><Icon name="ear" size={20} /></span>
+            )}
+            <p className="font-medium">{streaming || playing ? "Listening" : "Quiet until it matters"}</p>
+            <p className="mt-1 text-sm text-ink-3">Most of a call isn&apos;t pushback, so nothing shows until there&apos;s something worth asking.</p>
           </div>
         )}
-        {history.length > 0 && (
-          <Disclosure title="Earlier on this call" icon="clock" meta={<span className="num">{history.length}</span>} className="pt-1">
+        {(done ? cards.length > 0 : history.length > 0) && (
+          <Disclosure title={done ? "Questions from this call" : "Earlier on this call"} icon="clock" meta={<span className="num">{done ? cards.length : history.length}</span>} className="pt-1">
             <div className="space-y-2 pt-2">
-              {history.map((c) => <SuggestionRow key={c.id} s={c} />)}
+              {(done ? [...cards].reverse() : history).map((c) => <SuggestionRow key={c.id} s={c} />)}
             </div>
           </Disclosure>
         )}
       </section>
 
       {/* Brief + learning loop */}
-      <aside className="space-y-4">
+      <aside className={`space-y-4 transition-opacity duration-500 ${playing ? "opacity-50 hover:opacity-100" : ""}`}>
         <BriefPanel deal={deal} data={briefData} loading={briefLoading} onRegenerate={() => loadBrief(true)} live={session.mode === "live"} progress={progress} />
         <LearningLoop log={log} onClear={() => setLog([])} />
       </aside>
@@ -359,5 +419,56 @@ function Markdown({ text }: { text: string }) {
         return <p key={i} className="text-ink-2">{block}</p>;
       })}
     </>
+  );
+}
+
+// After the call: what happened, with nothing for the recruiter to write up.
+function Recap({ cards, nextSteps, name }: { cards: Card[]; nextSteps: string[]; name: string }) {
+  const asked = cards.filter((c) => c.autoAsked).length;
+  const used = cards.filter((c) => c.acted === "used").length;
+  const moments = [...new Set(cards.map((c) => c.categoryId))];
+  return (
+    <article className="enter panel p-6 space-y-5">
+      <div className="grid grid-cols-3 gap-3">
+        <Stat value={cards.length} label="questions suggested" />
+        <Stat value={used} label={asked ? `used, ${asked} caught automatically` : "used"} />
+        <Stat value={moments.length} label="moments flagged" />
+      </div>
+      <div>
+        <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-2"><Icon name="ear" size={12} /> What came up</h3>
+        <div className="flex flex-wrap gap-1.5">
+          {moments.map((m) => (
+            <span key={m} className="flex items-center gap-1.5 pl-2 pr-2.5 py-1 rounded-full bg-fast-soft text-fast text-xs font-medium">
+              <Icon name={CATEGORY_ICON[m] ?? "message"} size={12} />{MOMENT[m] ?? m}
+            </span>
+          ))}
+        </div>
+      </div>
+      {nextSteps.length > 0 && (
+        <div>
+          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-2 mb-2"><Icon name="target" size={12} /> Next steps for {name}&apos;s deal</h3>
+          <ol className="space-y-2">
+            {nextSteps.map((n, i) => (
+              <li key={n} className="rise flex gap-2.5 text-sm" style={{ animationDelay: `${i * 80}ms` }}>
+                <span className="num shrink-0 grid place-items-center w-5 h-5 rounded-full bg-fast-soft text-fast text-[11px]">{i + 1}</span>
+                <span className="text-ink-2">{n}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+      <p className="flex items-center gap-1.5 text-xs text-ink-3 pt-3 border-t border-line">
+        <Icon name="check" size={12} className="text-fast" /> Saved to the deal and the learning loop. Nothing to write up.
+      </p>
+    </article>
+  );
+}
+
+function Stat({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="rounded-xl bg-paper px-3 py-2.5">
+      <div className="num text-2xl font-semibold">{value}</div>
+      <div className="text-xs text-ink-3 leading-snug">{label}</div>
+    </div>
   );
 }

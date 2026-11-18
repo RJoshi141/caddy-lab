@@ -21,6 +21,11 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
         { category: "counteroffer", why: "Bank has a habit of retention offers for senior engineers" },
       ],
       drewOn: { deals: 1284, files: 9 },
+      nextSteps: [
+        "Tell Marta the real gap is about 5k on base, not 25k.",
+        "Go back with 185 and a six month comp review in writing.",
+        "Prep Nadia for the counteroffer before she resigns.",
+      ],
       ladders: {
         comp_gap: [
           { question: "When you say 190, is that the number you need, or the number that would stop you feeling behind your friend?", why: "Splits an ego anchor from a real cash need before anyone goes back to Marta", signals: ["number mentioned", "peer anchor"], playbookRef: "comp-gap.md", evidence: { deals: 214, rate: 0.71, baseline: 0.46, example: "Senior engineer, fintech, anchored to a friend's pay. Split base from total, accepted at 182k." } },
@@ -59,6 +64,11 @@ export const MOCK_BRIEFS: Record<string, { brief: Brief; usage: Usage }> = {
         { category: "title_level", why: "Senior IC may read as sideways" },
       ],
       drewOn: { deals: 876, files: 7 },
+      nextSteps: [
+        "Ask Sam if the role can include one direct report within a year.",
+        "Offer two fixed office days to take the commute off the table.",
+        "If it's still lukewarm, park Marcus and look for a team lead role.",
+      ],
       ladders: {
         motivation_mismatch: [
           { question: "When you picture leading a team, is it the people part you want, or the influence over what gets built?", why: "A senior IC with real product influence might scratch the second itch, not the first", signals: ["wants something else"], playbookRef: "motivation-mismatch.md", evidence: { deals: 163, rate: 0.52, baseline: 0.31, example: "Wanted influence, not reports. Took a senior IC role with roadmap ownership." } },

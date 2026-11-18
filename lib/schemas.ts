@@ -29,6 +29,8 @@ export const Brief = z.object({
   ladders: z.record(z.string(), z.array(Rung).min(1).max(4)),
   // How much of the corpus this brief drew on.
   drewOn: z.object({ deals: z.number(), files: z.number() }).optional(),
+  // What the recruiter should do after the call, if it goes the way the brief expects.
+  nextSteps: z.array(z.string()).optional(),
 });
 
 export const Refinement = z.object({

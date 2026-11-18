@@ -7,10 +7,26 @@ import { Collapse } from "./ui";
 
 export type CardData = Suggestion & { files?: string[]; pending?: boolean; acted?: "used" | "ignored"; autoAsked?: boolean };
 
+// How a recruiter would name the moment, not how a classifier would.
+export const MOMENT: Record<string, string> = {
+  comp_gap: "Pushing on pay",
+  competing_process: "Another offer in play",
+  counteroffer: "Counteroffer risk",
+  motivation_mismatch: "Not sold yet",
+  remote_location: "Office days",
+  timing: "Timing worry",
+  notice_period: "Notice period",
+  title_level: "Title worry",
+  company_doubt: "Doubts about the company",
+  hiring_manager: "Unsure about the manager",
+  scope_role: "Unclear on the role",
+  commitment_signal: "Leaning in",
+};
+
 const ms = (x: number) => (x < 0.01 ? "<0.01 ms" : x < 1 ? `${x.toFixed(2)} ms` : `${Math.round(x)} ms`);
 
 // The big card: the question the recruiter should ask right now.
-export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; ladderSize: number; onAct: (a: "used" | "ignored") => void; onPeek: (file: string) => void }) {
+export function SuggestionCard({ s, ladderSize, upNext, onAct, onPeek }: { s: CardData; ladderSize: number; upNext?: string; onAct: (a: "used" | "ignored") => void; onPeek: (file: string) => void }) {
   const swapped = s.refined?.swapped;
   const question = swapped ? s.refined!.question : s.question;
   const cat = CATEGORY_BY_ID[s.categoryId];
@@ -20,12 +36,12 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
   const [more, setMore] = useState(false);
 
   return (
-    <article className={`rise panel p-6 shadow-[0_10px_30px_-20px_rgb(23_25_29/0.35)] ${s.acted === "used" ? "border-fast/40" : ""}`}>
+    <article className={`enter panel p-6 shadow-[0_10px_30px_-20px_rgb(23_25_29/0.35)] ${s.acted === "used" ? "border-fast/40" : ""}`}>
       {/* Meta row: what kind of moment this is, and how fast it showed up */}
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="flex items-center gap-1.5 pl-2 pr-2.5 py-1 rounded-full bg-fast-soft text-fast font-medium">
           <Icon name={CATEGORY_ICON[s.categoryId] ?? "message"} size={13} />
-          {cat?.label}
+          {MOMENT[s.categoryId] ?? cat?.label}
         </span>
         <span className="flex items-center gap-1.5 text-ink-3" title="Where this sits in the follow-up ladder">
           <span className="flex gap-1">
@@ -44,7 +60,7 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
         </span>
       </div>
 
-      <p key={question} className={`display mt-4 text-[26px] leading-[1.25] font-medium ${swapped ? "flash rounded-md -mx-1 px-1" : ""}`}>{question}</p>
+      <p key={question} className={`display mt-4 text-[26px] leading-[1.25] font-medium ${swapped ? "flash enter rounded-md -mx-1 px-1" : ""} ${s.pending ? "shimmer" : ""}`}>{question}</p>
 
       {/* What happened in similar past deals: the corpus, in one line */}
       {ev && (
@@ -61,7 +77,7 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
       <div className="mt-3 min-h-6 text-sm">
         {s.pending && (
           <span className="flex items-center gap-2 text-ink-3">
-            <Icon name="loader" size={14} className="spin" /> Refining in the background…
+            <Icon name="sparkles" size={14} className="text-slow" /> Sharpening with the latest lines…
           </span>
         )}
         {s.refined && swapped && (
@@ -142,6 +158,16 @@ export function SuggestionCard({ s, ladderSize, onAct, onPeek }: { s: CardData; 
         </Collapse>
       </section>
 
+      {upNext && (
+        <div className="group mt-4 flex items-start gap-2 rounded-xl bg-paper px-3.5 py-2.5 text-sm">
+          <Icon name="layers" size={13} className="mt-0.5 text-ink-3" />
+          <span className="min-w-0">
+            <span className="text-xs text-ink-3">Ready if it comes up again</span>
+            <span className="block text-ink-2 line-clamp-1 group-hover:line-clamp-none">{upNext}</span>
+          </span>
+        </div>
+      )}
+
       <div className="mt-5 flex items-center gap-2 min-h-10">
         {s.autoAsked ? (
           <span className="rise flex items-center gap-2 px-3.5 min-h-10 rounded-xl bg-fast-soft text-fast text-sm font-medium">
@@ -200,7 +226,7 @@ export function SuggestionRow({ s }: { s: CardData }) {
       <div className="min-w-0 flex-1">
         <p className="text-sm text-ink line-clamp-2">{q}</p>
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-3">
-          <span>{CATEGORY_BY_ID[s.categoryId]?.label} · follow-up {s.rung + 1}</span>
+          <span>{MOMENT[s.categoryId] ?? CATEGORY_BY_ID[s.categoryId]?.label} · follow-up {s.rung + 1}</span>
           {s.pending && <span className="flex items-center gap-1"><Icon name="loader" size={11} className="spin" /> refining</span>}
           {swapped && <span className="flex items-center gap-1 text-slow"><Icon name="refresh" size={11} /> refined</span>}
           {s.refined && !swapped && s.refined.question && <span className="flex items-center gap-1 text-slow"><Icon name="sparkles" size={11} /> late option</span>}
