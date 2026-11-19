@@ -222,6 +222,12 @@ export function CallScreen({ active = true }: { active?: boolean }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [ready, done, playing, next, peek, briefOpen, active]);
 
+  // Let the tour know where the call is, so it can describe what's actually on screen.
+  useEffect(() => {
+    document.body.dataset.call = idx === 0 ? "idle" : done ? "ended" : "live";
+    document.body.dataset.question = current ? "yes" : "no";
+  }, [idx, done, current]);
+
   // Leaving the tab pauses the call, so it never runs on unseen.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

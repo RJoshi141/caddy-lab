@@ -33,7 +33,7 @@ export function Header() {
         </nav>
         <div className="ml-auto flex items-center gap-4 text-sm">
           <button onClick={startTour} className="press flex items-center gap-1 text-ink-3 hover:text-ink">
-            <Icon name="sparkles" size={13} /> Tour
+            <Icon name="compass" size={14} /> Tour
           </button>
           {mode === "live" ? (
             <button onClick={goMock} className="press text-slow hover:underline underline-offset-4">Live API · switch to mock</button>

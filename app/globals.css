@@ -68,6 +68,13 @@ body {
 @keyframes caret { 50% { opacity: 0; } }
 .caret { display: inline-block; width: 2px; height: 1em; margin-left: 2px; vertical-align: -2px; background: currentColor; animation: caret 900ms steps(1) infinite; }
 
+/* Tour: step content slides in the direction you're moving */
+@keyframes tourNext { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+@keyframes tourBack { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+.tour-in-next { animation: tourNext 360ms cubic-bezier(.22,.8,.24,1) 80ms both; }
+.tour-in-back { animation: tourBack 360ms cubic-bezier(.22,.8,.24,1) 80ms both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .rise, .flash, .spin, .ping, .lift, .press, .eq, .shimmer, .enter, .caret { animation: none !important; transition: none !important; }
+  [role="dialog"] *, [role="dialog"] { transition: none !important; }
+  .rise, .flash, .spin, .ping, .lift, .press, .eq, .shimmer, .enter, .caret, .tour-in-next, .tour-in-back { animation: none !important; transition: none !important; }
 }
