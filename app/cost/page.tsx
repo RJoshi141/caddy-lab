@@ -12,17 +12,25 @@ import { Disclosure, Switch, Tabs, useTween } from "@/components/ui";
 
 const SCENARIO = SCENARIOS[0]; // same call as the demo on the Call tab
 
+// Token sizes don't change between visits, so keep them: coming back to this
+// tab shows the numbers instantly instead of a loading flash.
+const sizeCache: Record<string, { mode: string; sizes: TokenSizes }> = {};
+
 export default function CostPage() {
   const session = useSession();
-  const [sizes, setSizes] = useState<{ mode: string; sizes: TokenSizes } | null>(null);
+  const [sizes, setSizes] = useState<{ mode: string; sizes: TokenSizes } | null>(() => sizeCache[session.mode] ?? null);
   const [a, setA] = useState<Assumptions>({ ...CALL_DEFAULTS, naiveCaching: false });
   const [naiveModel, setNaiveModel] = useState<ModelId>(MODELS.naive);
   const [scale, setScale] = useState({ recruiters: 1000, hoursPerDay: 3, days: 21 });
 
   useEffect(() => {
+    if (sizeCache[session.mode]) return;
     fetch("/api/tokens", { method: "POST", headers: session.headers(), body: JSON.stringify({ scenarioId: SCENARIO.id }) })
       .then((r) => r.json())
-      .then(setSizes);
+      .then((v) => {
+        sizeCache[session.mode] = v;
+        setSizes(v);
+      });
   }, [session.mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const dealId = SCENARIO.dealId;
@@ -38,7 +46,7 @@ export default function CostPage() {
 
   if (!sizes || !naive || !caddy) {
     return (
-      <div className="py-24 flex items-center justify-center gap-2 text-ink-3">
+      <div className="min-h-[70vh] flex items-center justify-center gap-2 text-ink-3">
         <Icon name="loader" size={16} className="spin" /> Counting tokens…
       </div>
     );

@@ -3,6 +3,8 @@ import "./globals.css";
 import { SessionProvider } from "./session";
 import { Header } from "@/components/Header";
 import { Splash } from "@/components/Splash";
+import { PersistentCall } from "@/components/PersistentCall";
+import { Tour } from "@/components/Tour";
 
 export const metadata: Metadata = {
   title: "Caddy Lab",
@@ -23,7 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Splash />
         <SessionProvider>
           <Header />
-          <main className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-6">{children}</main>
+          <main className="flex-1 w-full max-w-[1440px] mx-auto px-6 py-6">
+            <PersistentCall />
+            {children}
+          </main>
+          <Tour />
           <footer className="text-center text-xs text-ink-3 py-6">Prototype exploring live call coaching. Mock data.</footer>
         </SessionProvider>
       </body>

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useSession } from "@/app/session";
 import { Icon, type IconName } from "./Icon";
+import { startTour } from "./Tour";
 
 export function Header() {
   const path = usePathname();
@@ -15,7 +16,7 @@ export function Header() {
   const tab = (href: string, label: string, icon: IconName) => {
     const on = path === href;
     return (
-      <Link href={href} aria-current={on ? "page" : undefined} className={`press flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm ${on ? "bg-ink text-paper" : "text-ink-2 hover:bg-line/70"}`}>
+      <Link href={href} data-tour={href === "/cost" ? "cost-tab" : undefined} aria-current={on ? "page" : undefined} className={`press flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm ${on ? "bg-ink text-paper" : "text-ink-2 hover:bg-line/70"}`}>
         <Icon name={icon} size={14} />
         {label}
       </Link>
@@ -30,7 +31,10 @@ export function Header() {
           {tab("/", "Call", "phone")}
           {tab("/cost", "Cost", "dollar")}
         </nav>
-        <div className="ml-auto flex items-center gap-2 text-sm">
+        <div className="ml-auto flex items-center gap-4 text-sm">
+          <button onClick={startTour} className="press flex items-center gap-1 text-ink-3 hover:text-ink">
+            <Icon name="sparkles" size={13} /> Tour
+          </button>
           {mode === "live" ? (
             <button onClick={goMock} className="press text-slow hover:underline underline-offset-4">Live API · switch to mock</button>
           ) : asking ? (

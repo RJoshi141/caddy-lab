@@ -19,6 +19,9 @@
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
+/* Always reserve the scrollbar's space, so pages don't shift sideways when one scrolls and the other doesn't. */
+html { scrollbar-gutter: stable; background: var(--color-paper); }
+
 body {
   background: var(--color-paper);
   color: var(--color-ink);

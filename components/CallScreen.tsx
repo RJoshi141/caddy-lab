@@ -20,7 +20,7 @@ import { LearningLoop } from "./LearningLoop";
 type Card = Suggestion & { files?: string[]; pending?: boolean; acted?: "used" | "ignored"; autoAsked?: boolean; shownAt: number };
 const DOCS = playbook as { file: string; title: string; text: string }[];
 
-export function CallScreen() {
+export function CallScreen({ active = true }: { active?: boolean }) {
   const session = useSession();
   const emb = useEmbeddings();
   const [scenarioId, setScenarioId] = useState(SCENARIOS[0].id);
@@ -214,18 +214,24 @@ export function CallScreen() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(t.tagName) || peek || briefOpen) return;
+      if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(t.tagName) || peek || briefOpen || !active || document.body.dataset.tour === "open") return;
       if (e.key === " " && ready && !done) { e.preventDefault(); setPlaying((p) => !p); }
       if (e.key === "ArrowRight" && ready && !playing) { e.preventDefault(); next(); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [ready, done, playing, next, peek, briefOpen]);
+  }, [ready, done, playing, next, peek, briefOpen, active]);
+
+  // Leaving the tab pauses the call, so it never runs on unseen.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!active) setPlaying(false);
+  }, [active]);
 
   return (
     <div className="max-w-[1180px] mx-auto">
       {/* Call bar: who, where we are, and the few controls you need */}
-      <section className="panel relative overflow-hidden px-5 py-4 flex flex-wrap items-center gap-x-5 gap-y-3" aria-label="Call">
+      <section data-tour="callbar" className="panel relative overflow-hidden px-5 py-4 flex flex-wrap items-center gap-x-5 gap-y-3" aria-label="Call">
         <div className="flex items-center gap-3 min-w-0">
           <span className="relative grid place-items-center w-10 h-10 rounded-full bg-ink text-paper text-sm font-semibold shrink-0">
             {deal.candidate.name.split(" ").map((p) => p[0]).join("")}
@@ -246,14 +252,14 @@ export function CallScreen() {
           </div>
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div data-tour="controls" className="ml-auto flex items-center gap-2">
           {/* Voice level, only while someone is talking */}
           <div className={`flex items-end gap-0.5 h-5 mr-1 transition-opacity duration-300 ${streaming ? "opacity-100" : "opacity-0"}`} aria-hidden="true">
             {[0, 1, 2, 3, 4].map((k) => (
               <span key={k} className={`eq w-1 rounded-full ${streaming && scenario.lines[streaming.i].speaker === "candidate" ? "bg-ink" : "bg-fast"}`} style={{ animationDelay: `${k * 110}ms` }} />
             ))}
           </div>
-          <button onClick={() => setBriefOpen(true)} className="press flex items-center gap-1.5 min-h-10 px-3.5 rounded-xl border border-line hover:bg-paper text-sm">
+          <button data-tour="brief" onClick={() => setBriefOpen(true)} className="press flex items-center gap-1.5 min-h-10 px-3.5 rounded-xl border border-line hover:bg-paper text-sm">
             <Icon name="clipboard" size={14} /> Brief
             {briefData && <span className="num text-[11px] px-1.5 rounded-full bg-risk-soft text-risk">{briefData.brief.riskSignals.length}</span>}
           </button>
@@ -286,7 +292,7 @@ export function CallScreen() {
 
       <div className="mt-5 grid grid-cols-1 lg:grid-cols-[minmax(280px,340px)_1fr] gap-6 items-start">
         {/* Captions */}
-        <section className="lg:sticky lg:top-20" aria-label="Transcript">
+        <section data-tour="transcript" className="lg:sticky lg:top-20" aria-label="Transcript">
           <ol ref={feed} className="max-h-[calc(100vh-220px)] overflow-y-auto pr-1 space-y-4" aria-live="polite">
             {scenario.lines.slice(0, idx).map((l, i) => {
               const isCand = l.speaker === "candidate";
@@ -316,7 +322,7 @@ export function CallScreen() {
         </section>
 
         {/* The one thing to look at */}
-        <section className="space-y-4 min-w-0" aria-label="Ask next">
+        <section data-tour="question" className="space-y-4 min-w-0" aria-label="Ask next">
           {done && cards.length > 0 ? (
             <Recap key={scenarioId} cards={cards} nextSteps={briefData?.brief.nextSteps ?? []} followUp={briefData?.brief.followUp} name={firstName} />
           ) : current ? (
